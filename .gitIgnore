@@ -1,5 +1,4 @@
 node_modules/
 pruebas/
 package.json
-package-lock.json
 .env
