@@ -1,7 +1,17 @@
+require('dotenv').config();
+const app = require('../app');
 const request = require('supertest');
-const app = require('../../app');
+const mongoose = require('mongoose');
 
 describe('Test on teams API', ()=>{
+
+    beforeAll(async ()=>{
+        await mongoose.connect(process.env.URL_MONGODB);
+    });
+
+    afterAll(async ()=>{
+        await mongoose.disconnect();
+    })
 
     describe('GET /api/teams', ()=>{
 
