@@ -19,4 +19,15 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.put('/:teamId', async(req, res)=>{
+    try {
+        const teamId = req.params.teamId;
+        const updateObject = req.body;
+        const teamEdit = await TeamModel.findByIdAndUpdate(teamId, updateObject, {new: true});
+        res.json(teamEdit);
+    } catch (error) {
+        res.status(500).json({error: error});
+    }
+});
+
 module.exports = router;
