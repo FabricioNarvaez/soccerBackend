@@ -114,4 +114,27 @@ describe('Test on teams API', ()=>{
         });
 
     });
+
+    describe('DELETE /api/teams', ()=>{
+
+        // let team;
+
+        // beforeEach( async ()=>{
+        //     team = await TeamModel.create(newTeam);
+        // });
+
+        // it('Route "DELETE" works', async ()=>{
+        //     const response = await request(app, { port: 3000 }).delete(`api/teams/${team._id}`);
+
+        //     expect(response.status).toBe(200);
+        //     expect(response.headers['content-type']).toContain('json');
+        // });
+
+        // it('Should deleats team', async ()=>{
+        //     expect(response.body._id).toBeDefined();
+
+        //     const foundTrip = await TeamModel.findById(team._id);
+        //     expect(foundTrip).toBeNull();
+        // })
+    });
 })
