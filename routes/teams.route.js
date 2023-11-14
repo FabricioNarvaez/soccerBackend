@@ -1,43 +1,9 @@
 const router = require('express').Router();
-const TeamModel = require('../models/team.model');
+const TeamController = require("../controllers/team.controller");
 
-router.get('/', async (req, res)=>{
-    try {
-        const teams = await TeamModel.find();
-        res.json(teams);
-    } catch (error) {
-        res.status(500).json({error: error});
-    }
-});
-
-router.post('/', async (req, res) => {
-    try {
-        const newTeam = await TeamModel.create(req.body);
-        res.json(newTeam);
-    } catch (error) {
-        res.status(500).json({error: error});
-    }
-});
-
-router.put('/:teamId', async(req, res)=>{
-    try {
-        const teamId = req.params.teamId;
-        const updateObject = req.body;
-        const teamEdit = await TeamModel.findByIdAndUpdate(teamId, updateObject, {new: true});
-        res.json(teamEdit);
-    } catch (error) {
-        res.status(500).json({error: error});
-    }
-});
-
-router.delete('/:teamId', async(req, res)=>{
-    try {
-        const teamId = req.params.teamId;
-        const teamDelete = await TeamModel.findByIdAndDelete(teamId);
-        res.json(teamDelete);
-    } catch (error) {
-        res.status(500).json({error: error});
-    }
-})
+router.get('/', TeamController.getTeams)
+router.post('/', TeamController.save)
+router.post('/:teamId',TeamController.update)
+router.delete('/:teamId', TeamController.delete)
 
 module.exports = router;

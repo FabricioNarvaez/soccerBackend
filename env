@@ -1,0 +1,2 @@
+URL_MONGODB='mongodb+srv://ADMIN:GAGGL6yFphkVF11p@backend.k6odjpb.mongodb.net/dbsoccerBackend?retryWrites=true&w=majority'
+PORT=3000
