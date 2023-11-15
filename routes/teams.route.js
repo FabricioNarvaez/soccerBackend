@@ -3,7 +3,7 @@ const TeamController = require("../controllers/team.controller");
 
 router.get('/', TeamController.getTeams)
 router.post('/', TeamController.save)
-router.post('/:teamId',TeamController.update)
+router.put('/:teamId',TeamController.update)
 router.delete('/:teamId', TeamController.delete)
 
 module.exports = router;
