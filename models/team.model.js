@@ -10,7 +10,8 @@ const teamSchema = new Schema({
     GF: Number,
     GC: Number,
     shield: String,
-    players:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Jugador' }]
+    players:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Jugador' }],
+    coach : { type: mongoose.Types.ObjectId } 
 });
 
-module.exports = mongoose.model("team", teamSchema);
+module.exports = mongoose.model("teams", teamSchema);

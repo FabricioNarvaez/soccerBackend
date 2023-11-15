@@ -2,11 +2,31 @@
 
 const TeamModel = require('../models/team.model');
 
+const CoachModel = require('../models/coach.model');
+
+
 const controller = {
 
     getTeams : async (req, res)=>{
         try {
-            const teams = await TeamModel.find();
+
+            const teams = await TeamModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                          from: "coaches",
+                          localField: "coach",
+                          foreignField: "_id",
+                          as: "coachTeam"
+                        }
+                    }, { $unwind: "$coachTeam" }
+                ]);
+
+            // Accede al campo "nombre" del entrenador
+            teams.forEach(team => {
+                team.coachName = team.coachTeam.name;
+            });
             res.json(teams);
         } catch (error) {
             res.status(500).json({error: error});
