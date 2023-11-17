@@ -6,7 +6,19 @@ const controller = {
 
     getTeams : async (req, res)=>{
         try {
-            const teams = await TeamModel.find();
+
+            const teams = await TeamModel.aggregate(
+                [
+                    {
+                        $lookup:
+                        {
+                          from: "coaches",
+                          localField: "coach",
+                          foreignField: "_id",
+                          as: "coachTeam"
+                        }
+                    }, { $addFields: { "coachName": { $arrayElemAt: ["$coachTeam.name", 0] } } }, { $project: { "coachTeam": 0 } }
+                ]);
             res.json(teams);
         } catch (error) {
             res.status(500).json({error: error});

@@ -42,6 +42,15 @@ describe('Test on teams API', ()=>{
         it('Request returns an array of teams', ()=>{
             expect(response.body).toBeInstanceOf(Array);
         })
+
+        it('Each team in the response should have coach name', () => {
+            expect(response.body).toBeInstanceOf(Array);
+
+            response.body.forEach(team => {
+                expect(team.coachName).toBeDefined();
+                expect(typeof team.coachName).toBe('string');
+            });
+        });
         
     });
 
