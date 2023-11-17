@@ -17,13 +17,8 @@ const controller = {
                           foreignField: "_id",
                           as: "coachTeam"
                         }
-                    }, { $unwind: "$coachTeam" }
+                    }, { $addFields: { "coachName": { $arrayElemAt: ["$coachTeam.name", 0] } } }, { $project: { "coachTeam": 0 } }
                 ]);
-
-            // Accede al campo "nombre" del entrenador
-            teams.forEach(team => {
-                team.coachName = team.coachTeam.name;
-            });
             res.json(teams);
         } catch (error) {
             res.status(500).json({error: error});
