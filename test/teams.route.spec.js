@@ -4,146 +4,134 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const TeamModel = require('../models/team.model');
 
-describe('Test on teams API', ()=>{
+describe('Test on teams API', () => {
+	const newTeam = {
+		name: 'Prueba Equipo',
+		acronym: 'PE',
+		PG: 0,
+		PE: 0,
+		PP: 0,
+		GF: 0,
+		GC: 0,
+		shield: 'Sin escudo',
+		players: [],
+	};
 
-    const newTeam = {
-        name: "Prueba Equipo",
-        acronym: "PE",
-        PG: 0,
-        PE: 0,
-        PP: 0,
-        GF: 0,
-        GC: 0,
-        shield: "Sin escudo",
-        players: []
-    }
+	beforeAll(async () => {
+		await mongoose.connect(process.env.URL_MONGODB);
+	});
 
-    beforeAll(async ()=>{
-        await mongoose.connect(process.env.URL_MONGODB);
-    });
+	afterAll(async () => {
+		await mongoose.disconnect();
+	});
 
-    afterAll(async ()=>{
-        await mongoose.disconnect();
-    });
+	describe('GET /api/teams', () => {
+		let response;
 
-    describe('GET /api/teams', ()=>{
+		beforeEach(async () => {
+			response = await request(app).get('/api/teams').send();
+		});
 
-        let response;
+		it('Route "GET" works', async () => {
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+		});
 
-        beforeEach(async ()=>{
-            response = await request(app).get('/api/teams').send();
-        });
+		it('Request returns an array of teams', () => {
+			expect(response.body).toBeInstanceOf(Array);
+		});
 
-        it('Route "GET" works', async ()=>{
-            expect(response.status).toBe(200);
-            expect(response.headers['content-type']).toContain('json');
-        });
+		it('Each team in the response should have coach name', () => {
+			expect(response.body).toBeInstanceOf(Array);
 
-        it('Request returns an array of teams', ()=>{
-            expect(response.body).toBeInstanceOf(Array);
-        })
+			response.body.forEach((team) => {
+				expect(team.coachName).toBeDefined();
+				expect(typeof team.coachName).toBe('string');
+			});
+		});
+	});
 
-        it('Each team in the response should have coach name', () => {
-            expect(response.body).toBeInstanceOf(Array);
+	describe('POST /api/teams', () => {
+		const wrongTeam = {
+			name: 'Prueba Equipo',
+			acronym: 'PE',
+			PG: 0,
+			PE: 0,
+			PP: 0,
+			GF: 0,
+			GC: 0,
+			shield: 'Sin escudo',
+			players: {},
+		};
 
-            response.body.forEach(team => {
-                expect(team.coachName).toBeDefined();
-                expect(typeof team.coachName).toBe('string');
-            });
-        });
-        
-    });
+		afterAll(async () => {
+			await TeamModel.deleteMany({ name: 'Prueba Equipo' });
+		});
 
-    describe('POST /api/teams', ()=>{
+		it('Route "POST" works', async () => {
+			const response = await request(app).post('/api/teams').send(newTeam);
 
-        const wrongTeam = {
-            name: "Prueba Equipo",
-            acronym: "PE",
-            PG: 0,
-            PE: 0,
-            PP: 0,
-            GF: 0,
-            GC: 0,
-            shield: "Sin escudo",
-            players: {}
-        }
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+		});
 
-        afterAll(async ()=>{
-            await TeamModel.deleteMany({ name: "Prueba Equipo"});
-        });
+		it('Should add new team', async () => {
+			const response = await request(app).post('/api/teams').send(newTeam);
 
-        it('Route "POST" works', async ()=>{
-            const response = await request(app).post('/api/teams').send(newTeam);
+			expect(response.body._id).toBeDefined();
+			expect(response.body.name).toBe(newTeam.name);
+		});
 
-            expect(response.status).toBe(200);
-            expect(response.headers['content-type']).toContain('json');
-        });
+		it('Should not add new team', async () => {
+			const response = await request(app).post('/api/teams').send(wrongTeam);
 
-        it('Should add new team', async ()=>{
-            const response = await request(app).post('/api/teams').send(newTeam);
+			expect(response.status).toBe(500);
+			expect(response.body.error).toBeDefined();
+		});
+	});
 
-            expect(response.body._id).toBeDefined();
-            expect(response.body.name).toBe(newTeam.name);
-        });
+	describe('PUT /api/teams', () => {
+		let team;
 
-        it('Should not add new team', async ()=>{
-            const response = await request(app).post('/api/teams').send(wrongTeam);
+		beforeEach(async () => {
+			team = await TeamModel.create(newTeam);
+		});
 
-            expect(response.status).toBe(500);
-            expect(response.body.error).toBeDefined();
-        });
-    });
+		afterEach(async () => {
+			await TeamModel.findByIdAndDelete(team._id);
+		});
 
-    describe('PUT /api/teams', ()=>{
+		it('Route "PUT" works', async () => {
+			const update = { name: 'Team Updated' };
+			const response = await request(app).put(`/api/teams/${team._id}`).send(update);
 
-        let team;
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+		});
 
-        beforeEach( async ()=>{
-            team = await TeamModel.create(newTeam);
-        });
+		it('Should updates team', async () => {
+			const update = { name: 'Team Updated' };
+			const response = await request(app).put(`/api/teams/${team._id}`).send(update);
 
-        afterEach( async ()=>{
-            await TeamModel.findByIdAndDelete(team._id);
-        });
+			expect(response.body._id).toBeDefined();
+			expect(response.body.name).toBe(update.name);
+		});
+	});
 
-        it('Route "PUT" works', async ()=>{
-            const update = {name: 'Team Updated'};
-            const response = await request(app).put(`/api/teams/${team._id}`).send(update);
-
-            expect(response.status).toBe(200);
-            expect(response.headers['content-type']).toContain('json');
-        });
-
-        it('Should updates team', async ()=>{
-            const update = {name: 'Team Updated'};
-            const response = await request(app).put(`/api/teams/${team._id}`).send(update);
-
-            expect(response.body._id).toBeDefined();
-            expect(response.body.name).toBe(update.name);
-        });
-
-    });
-
-    describe('DELETE /api/teams', ()=>{
-
-        // let team;
-
-        // beforeEach( async ()=>{
-        //     team = await TeamModel.create(newTeam);
-        // });
-
-        // it('Route "DELETE" works', async ()=>{
-        //     const response = await request(app, { port: 3000 }).delete(`api/teams/${team._id}`);
-
-        //     expect(response.status).toBe(200);
-        //     expect(response.headers['content-type']).toContain('json');
-        // });
-
-        // it('Should deleats team', async ()=>{
-        //     expect(response.body._id).toBeDefined();
-
-        //     const foundTrip = await TeamModel.findById(team._id);
-        //     expect(foundTrip).toBeNull();
-        // })
-    });
-})
+	describe('DELETE /api/teams', () => {
+		// let team;
+		// beforeEach( async ()=>{
+		//     team = await TeamModel.create(newTeam);
+		// });
+		// it('Route "DELETE" works', async ()=>{
+		//     const response = await request(app, { port: 3000 }).delete(`api/teams/${team._id}`);
+		//     expect(response.status).toBe(200);
+		//     expect(response.headers['content-type']).toContain('json');
+		// });
+		// it('Should deleats team', async ()=>{
+		//     expect(response.body._id).toBeDefined();
+		//     const foundTrip = await TeamModel.findById(team._id);
+		//     expect(foundTrip).toBeNull();
+		// })
+	});
+});
