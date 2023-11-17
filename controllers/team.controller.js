@@ -2,9 +2,6 @@
 
 const TeamModel = require('../models/team.model');
 
-const CoachModel = require('../models/coach.model');
-
-
 const controller = {
 
     getTeams : async (req, res)=>{
