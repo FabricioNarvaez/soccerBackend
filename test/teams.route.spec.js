@@ -13,6 +13,7 @@ describe('Test on teams API', () => {
 		PP: 0,
 		GF: 0,
 		GC: 0,
+		group: 'A',
 		shield: 'Sin escudo',
 		players: [],
 	};
@@ -41,12 +42,36 @@ describe('Test on teams API', () => {
 			expect(response.body).toBeInstanceOf(Array);
 		});
 
-		it('Each team in the response should have coach name', () => {
+		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', () => {
 			expect(response.body).toBeInstanceOf(Array);
 
+			const columns = ["name", "acronym", "PG", "PP", "PE", "GF", "GC", "shield", "players", "coachName", "group"];
+
 			response.body.forEach((team) => {
-				expect(team.coachName).toBeDefined();
-				expect(typeof team.coachName).toBe('string');
+				columns.forEach((column) =>{
+					expect(team[column]).toBeDefined();
+					switch (column) {
+						case "name":
+						case "acronym":
+						case "shield":
+						case "coachName":
+							expect(typeof team[column]).toBe('string');
+							break;
+						case "PG":
+						case "PP":
+						case "PE":
+						case "GF":
+						case "GC":
+							expect(typeof team[column]).toBe('number');
+							break;
+						case "players":
+							expect(typeof team[column]).toBe('object');
+							break;
+					
+						default:
+							break;
+					}
+				})
 			});
 		});
 	});
@@ -60,6 +85,7 @@ describe('Test on teams API', () => {
 			PP: 0,
 			GF: 0,
 			GC: 0,
+			group: "A",
 			shield: 'Sin escudo',
 			players: {},
 		};
@@ -118,7 +144,7 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('DELETE /api/teams', () => {
+	// describe('DELETE /api/teams', () => {
 		// let team;
 		// beforeEach( async ()=>{
 		//     team = await TeamModel.create(newTeam);
@@ -133,5 +159,5 @@ describe('Test on teams API', () => {
 		//     const foundTrip = await TeamModel.findById(team._id);
 		//     expect(foundTrip).toBeNull();
 		// })
-	});
+	// });
 });
