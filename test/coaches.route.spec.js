@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const CoachModel = require('../models/coach.model');
 const { encryptPassword } = require('../helpers/handleBcrypt');
 
-describe('Test on teams API', () => {
+describe('Test on coaches API', () => {
 	const newCoach = {
 		userName: 'testCoach',
 		password: 'passwordCoach',
@@ -52,7 +52,7 @@ describe('Test on teams API', () => {
 			await CoachModel.findByIdAndDelete(coach._id);
 		});
 
-		it('Debería devolver un token al autenticar un coach existente', async () => {
+		it('Should return a token when authenticating an existing coach', async () => {
 			const coachCredentials = {
 				userName: 'testCoach',
 				password: 'passwordCoach',
@@ -65,7 +65,7 @@ describe('Test on teams API', () => {
 			expect(response.body).toHaveProperty('token');
 		});
 
-		it('Debería devolver un error 404 si el coach no existe', async () => {
+		it('Should return a 404 error if the coach does not exist', async () => {
 			const coachCredentials = {
 				userName: 'noExiste',
 				password: 'cualquierPassword',
@@ -77,7 +77,7 @@ describe('Test on teams API', () => {
 			expect(response.body).toHaveProperty('message', 'Coach not found');
 		});
 
-		it('Debería devolver un error 401 si la contraseña es incorrecta', async () => {
+		it('Should return a 401 error if the password is incorrect', async () => {
 			const coachCredentials = {
 				userName: 'testCoach',
 				password: 'wrongPassword',
