@@ -45,33 +45,45 @@ describe('Test on teams API', () => {
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', () => {
 			expect(response.body).toBeInstanceOf(Array);
 
-			const columns = ["name", "acronym", "PG", "PP", "PE", "GF", "GC", "shield", "players", "coachName", "group"];
+			const columns = [
+				'name',
+				'acronym',
+				'PG',
+				'PP',
+				'PE',
+				'GF',
+				'GC',
+				'shield',
+				'players',
+				'coachName',
+				'group',
+			];
 
 			response.body.forEach((team) => {
-				columns.forEach((column) =>{
+				columns.forEach((column) => {
 					expect(team[column]).toBeDefined();
 					switch (column) {
-						case "name":
-						case "acronym":
-						case "shield":
-						case "coachName":
+						case 'name':
+						case 'acronym':
+						case 'shield':
+						case 'coachName':
 							expect(typeof team[column]).toBe('string');
 							break;
-						case "PG":
-						case "PP":
-						case "PE":
-						case "GF":
-						case "GC":
+						case 'PG':
+						case 'PP':
+						case 'PE':
+						case 'GF':
+						case 'GC':
 							expect(typeof team[column]).toBe('number');
 							break;
-						case "players":
+						case 'players':
 							expect(typeof team[column]).toBe('object');
 							break;
-					
+
 						default:
 							break;
 					}
-				})
+				});
 			});
 		});
 	});
@@ -85,7 +97,7 @@ describe('Test on teams API', () => {
 			PP: 0,
 			GF: 0,
 			GC: 0,
-			group: "A",
+			group: 'A',
 			shield: 'Sin escudo',
 			players: {},
 		};
@@ -145,19 +157,19 @@ describe('Test on teams API', () => {
 	});
 
 	// describe('DELETE /api/teams', () => {
-		// let team;
-		// beforeEach( async ()=>{
-		//     team = await TeamModel.create(newTeam);
-		// });
-		// it('Route "DELETE" works', async ()=>{
-		//     const response = await request(app, { port: 3000 }).delete(`api/teams/${team._id}`);
-		//     expect(response.status).toBe(200);
-		//     expect(response.headers['content-type']).toContain('json');
-		// });
-		// it('Should deleats team', async ()=>{
-		//     expect(response.body._id).toBeDefined();
-		//     const foundTrip = await TeamModel.findById(team._id);
-		//     expect(foundTrip).toBeNull();
-		// })
+	// let team;
+	// beforeEach( async ()=>{
+	//     team = await TeamModel.create(newTeam);
+	// });
+	// it('Route "DELETE" works', async ()=>{
+	//     const response = await request(app, { port: 3000 }).delete(`api/teams/${team._id}`);
+	//     expect(response.status).toBe(200);
+	//     expect(response.headers['content-type']).toContain('json');
+	// });
+	// it('Should deleats team', async ()=>{
+	//     expect(response.body._id).toBeDefined();
+	//     const foundTrip = await TeamModel.findById(team._id);
+	//     expect(foundTrip).toBeNull();
+	// })
 	// });
 });
