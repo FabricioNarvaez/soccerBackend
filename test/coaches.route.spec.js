@@ -3,7 +3,6 @@ const app = require('../app');
 const request = require('supertest');
 const mongoose = require('mongoose');
 const CoachModel = require('../models/coach.model');
-const { encryptPassword } = require('../helpers/handleBcrypt');
 
 describe('Test on coaches API', () => {
 	const newCoach = {
