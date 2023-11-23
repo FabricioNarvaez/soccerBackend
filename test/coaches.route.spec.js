@@ -51,8 +51,7 @@ describe('Test on coaches API', () => {
 		});
 
 		it('Should return a token when authenticating an existing coach', async () => {
-			const { userName, password } = newCoach;
-			const coachCredentials = { userName, password };
+			const coachCredentials = { userName, password } = newCoach;
 			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
 
 			expect(response.statusCode).toBe(200);
@@ -60,7 +59,7 @@ describe('Test on coaches API', () => {
 			expect(response.body).toHaveProperty('token');
 		});
 
-		it('Should return a 404 error if the coach does not exist', async () => {
+		it('Should return a 404 error if coach does not exist', async () => {
 			const coachCredentials = {
 				userName: 'noExiste',
 				password: 'cualquierPassword',
