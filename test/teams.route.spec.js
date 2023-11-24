@@ -121,7 +121,7 @@ describe('Test on teams API', () => {
 		};
 
 		afterAll(async () => {
-			await TeamModel.deleteMany({ name: 'Prueba Equipo' });
+			await TeamModel.deleteMany({ name: newTeam.name });
 		});
 
 		it('Route "POST" works', async () => {
@@ -175,13 +175,9 @@ describe('Test on teams API', () => {
 	});
 
 	describe('DELETE /api/teams', () => {
-		let team;
-
-		beforeEach(async () => {
-			team = await TeamModel.create(newTeam);
-		});
 
 		it('Should deleats team', async () => {
+			const team = await TeamModel.create(newTeam);
 			const response = await request(app).delete(`/api/teams/${team._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
