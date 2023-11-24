@@ -31,7 +31,7 @@ describe('Test on admins API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-        it('Should add new admin', async () => {
+		it('Should add new admin', async () => {
 			const response = await request(app).post('/api/admins/register').send(newAdmin);
 
 			expect(response.body._id).toBeDefined();
@@ -39,8 +39,8 @@ describe('Test on admins API', () => {
 		});
 	});
 
-    describe('POST /api/admins/login', () => {
-        let admin;
+	describe('POST /api/admins/login', () => {
+		let admin;
 
 		beforeAll(async () => {
 			admin = await request(app).post('/api/admins/register').send(newAdmin);
@@ -50,8 +50,8 @@ describe('Test on admins API', () => {
 			await AdminModel.findByIdAndDelete(admin._id);
 		});
 
-        it('Should return a token when authenticating an existing admin', async () => {
-			const adminCredentials = { userName, password } = newAdmin;
+		it('Should return a token when authenticating an existing admin', async () => {
+			const adminCredentials = ({ userName, password } = newAdmin);
 
 			const response = await request(app).post('/api/admins/login').send(adminCredentials);
 
@@ -60,7 +60,7 @@ describe('Test on admins API', () => {
 			expect(response.body).toHaveProperty('token');
 		});
 
-        it('Should return a 404 error if admin does not exist', async () => {
+		it('Should return a 404 error if admin does not exist', async () => {
 			const adminCredentials = {
 				userName: 'noExiste',
 				password: 'password',
@@ -72,7 +72,7 @@ describe('Test on admins API', () => {
 			expect(response.body).toHaveProperty('message', 'Admin not found');
 		});
 
-        it('Should return a 401 error if the password is incorrect', async () => {
+		it('Should return a 401 error if the password is incorrect', async () => {
 			const adminCredentials = {
 				userName: 'testAdmin',
 				password: 'wrong',
@@ -83,5 +83,5 @@ describe('Test on admins API', () => {
 			expect(response.statusCode).toBe(401);
 			expect(response.body).toHaveProperty('message', 'Unauthorized');
 		});
-    })
+	});
 });
