@@ -51,7 +51,7 @@ describe('Test on coaches API', () => {
 		});
 
 		it('Should return a token when authenticating an existing coach', async () => {
-			const coachCredentials = { userName, password } = newCoach;
+			const coachCredentials = ({ userName, password } = newCoach);
 			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
 
 			expect(response.statusCode).toBe(200);
