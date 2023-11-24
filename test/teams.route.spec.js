@@ -40,10 +40,10 @@ describe('Test on teams API', () => {
 			response = await request(app).get('/api/teams').send();
 		});
 
-		afterAll(async ()=>{
+		afterAll(async () => {
 			await CoachModel.deleteMany({ userName: coachTeam.userName });
 			await TeamModel.deleteMany({ name: newTeam.name });
-		})
+		});
 
 		it('Route "GET" works', async () => {
 			expect(response.status).toBe(200);
@@ -57,7 +57,7 @@ describe('Test on teams API', () => {
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', async () => {
 			const teamcoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
 			newTeam.coach = teamcoachTest.body._id;
-			
+
 			await request(app).post('/api/teams').send(newTeam);
 			response = await request(app).get('/api/teams').send();
 
