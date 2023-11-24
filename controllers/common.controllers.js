@@ -33,4 +33,13 @@ const loginUser = async (req, res, Model, errorMessage) => {
 	}
 };
 
-module.exports = { registerUser, loginUser };
+const deleteUser = async (req, res, Model, userId) => {
+	try {
+		const userDeleted = await Model.findByIdAndDelete(userId);
+		res.json(userDeleted);
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
+};
+
+module.exports = { registerUser, loginUser, deleteUser };

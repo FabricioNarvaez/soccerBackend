@@ -43,7 +43,8 @@ describe('Test on coaches API', () => {
 		let coach;
 
 		beforeAll(async () => {
-			coach = await request(app).post('/api/coaches/register').send(newCoach);
+			const response = await request(app).post('/api/coaches/register').send(newCoach);
+			coach = response.body;
 		});
 
 		afterAll(async () => {
@@ -81,6 +82,24 @@ describe('Test on coaches API', () => {
 
 			expect(response.statusCode).toBe(401);
 			expect(response.body).toHaveProperty('message', 'Unauthorized');
+		});
+	});
+
+	describe('DELETE /api/coaches', () => {
+		it('Should deletes coach', async () => {
+			const coach = await CoachModel.create(newCoach);
+			const response = await request(app).delete(`/api/coaches/${coach._id}`);
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+
+			const foundCoach = await CoachModel.findById(coach._id);
+			expect(foundCoach).toBeNull();
+		});
+
+		it('Should fail if coach does not exist', async () => {
+			const idFail = 'notExist';
+			const response = await request(app).delete(`/api/coaches/${idFail}`);
+			expect(response.status).toBe(500);
 		});
 	});
 });
