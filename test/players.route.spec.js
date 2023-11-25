@@ -14,6 +14,8 @@ describe('Test on players API', () => {
 	});
 
 	describe('POST /api/players', () => {
+		let createdPlayer;
+
 		const newPlayer = {
 			name: 'PlayerTest',
 			playerNumber: 0,
@@ -25,14 +27,14 @@ describe('Test on players API', () => {
 		});
 
 		it('Route "POST" works', async () => {
-			const response = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players').send(newPlayer);
 
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
 		});
 
 		it('Should create a new player', async () => {
-			const response = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players').send(newPlayer);
 
 			expect(response.status).toBe(200);
 			expect(response.body._id).toBeDefined();
