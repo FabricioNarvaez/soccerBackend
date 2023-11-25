@@ -20,6 +20,10 @@ describe('Test on players API', () => {
 			alias: 'Test',
 		};
 
+		afterAll(async () => {
+			await PlayerModel.deleteMany({ name: newPlayer.name });
+		});
+
 		it('Route "POST" works', async () => {
 			const response = await request(app).post('/api/players').send(newPlayer);
 
