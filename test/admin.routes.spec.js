@@ -43,7 +43,7 @@ describe('Test on admins API', () => {
 		let admin;
 
 		beforeAll(async () => {
-			admin = await request(app).post('/api/admins/register').send(newAdmin);
+			admin = (await request(app).post('/api/admins/register').send(newAdmin)).body;
 		});
 
 		afterAll(async () => {
@@ -82,6 +82,24 @@ describe('Test on admins API', () => {
 
 			expect(response.statusCode).toBe(401);
 			expect(response.body).toHaveProperty('message', 'Unauthorized');
+		});
+	});
+
+	describe('DELETE /api/admins', () => {
+		it('Should deletes admin', async () => {
+			const admin = (await request(app).post('/api/admins/register').send(newAdmin)).body;
+			const response = await request(app).delete(`/api/admins/${admin._id}`);
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+
+			const foundAdmin = await AdminModel.findById(admin._id);
+			expect(foundAdmin).toBeNull();
+		});
+
+		it('Should fail if admin does not exist', async () => {
+			const idFail = 'notExist';
+			const response = await request(app).delete(`/api/admins/${idFail}`);
+			expect(response.status).toBe(500);
 		});
 	});
 });
