@@ -24,4 +24,14 @@ const createPlayer = async (req, res) => {
 	}
 };
 
-module.exports = { createPlayer };
+const getPlayer = async (req, res) => {
+	try {
+		const playerId = req.params.playerId;
+		const playerFounded = await PlayerModel.findById(playerId);
+		res.json(JSON.stringify(playerFounded, null, 2));
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
+};
+
+module.exports = { createPlayer, getPlayer};
