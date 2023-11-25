@@ -12,7 +12,7 @@ const playerSchema = new Schema({
 	expelledDoubleYellow: Number,
 	expelledRed: Number,
 	expelledTournament: Boolean,
-    cardsPaid: Boolean
+	cardsPaid: Boolean,
 });
 
 module.exports = mongoose.model('players', playerSchema);

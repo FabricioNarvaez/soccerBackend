@@ -175,7 +175,6 @@ describe('Test on teams API', () => {
 	});
 
 	describe('DELETE /api/teams', () => {
-
 		it('Should deleats team', async () => {
 			const team = await TeamModel.create(newTeam);
 			const response = await request(app).delete(`/api/teams/${team._id}`);
