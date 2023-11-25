@@ -43,8 +43,7 @@ describe('Test on coaches API', () => {
 		let coach;
 
 		beforeAll(async () => {
-			const response = await request(app).post('/api/coaches/register').send(newCoach);
-			coach = response.body;
+			coach = (await request(app).post('/api/coaches/register').send(newCoach)).body;
 		});
 
 		afterAll(async () => {
@@ -87,7 +86,7 @@ describe('Test on coaches API', () => {
 
 	describe('DELETE /api/coaches', () => {
 		it('Should deletes coach', async () => {
-			const coach = await CoachModel.create(newCoach);
+			const coach = (await request(app).post('/api/admins/register').send(newCoach)).body;
 			const response = await request(app).delete(`/api/coaches/${coach._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
