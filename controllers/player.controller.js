@@ -34,4 +34,4 @@ const getPlayer = async (req, res) => {
 	}
 };
 
-module.exports = { createPlayer, getPlayer};
+module.exports = { createPlayer, getPlayer };

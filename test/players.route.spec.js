@@ -6,7 +6,7 @@ const PlayerModel = require('../models/players.model');
 
 describe('Test on players API', () => {
 	let createdPlayer;
-	
+
 	const newPlayer = {
 		name: 'PlayerTest',
 		playerNumber: 0,
@@ -22,7 +22,6 @@ describe('Test on players API', () => {
 	});
 
 	describe('POST /api/players', () => {
-
 		afterAll(async () => {
 			await PlayerModel.deleteMany({ name: newPlayer.name });
 		});
@@ -43,14 +42,14 @@ describe('Test on players API', () => {
 		});
 	});
 
-	describe('GET Player /api/player/:id', ()=>{
-		beforeAll( async ()=>{
+	describe('GET Player /api/player/:id', () => {
+		beforeAll(async () => {
 			createdPlayer = await request(app).post('/api/players').send(newPlayer);
-		})
+		});
 
-		afterAll(async ()=>{
+		afterAll(async () => {
 			await PlayerModel.deleteMany({ name: createdPlayer.body.name });
-		})
+		});
 
 		it('Route "GET Player" works', async () => {
 			const foundedPlayer = await request(app).get(`/api/players/${createdPlayer.body._id}`).send();
@@ -58,5 +57,5 @@ describe('Test on players API', () => {
 			expect(foundedPlayer.status).toBe(200);
 			expect(foundedPlayer.headers['content-type']).toContain('json');
 		});
-	})
+	});
 });
