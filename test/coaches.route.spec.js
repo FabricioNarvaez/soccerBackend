@@ -79,7 +79,7 @@ describe('Test on coaches API', () => {
 
 			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
 
-			expect(response.statusCode).toBe(401);
+			expect(response.status).toBe(401);
 			expect(response.body).toHaveProperty('message', 'Unauthorized');
 		});
 	});
