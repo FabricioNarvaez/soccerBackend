@@ -18,7 +18,7 @@ const loginUser = async (req, res, Model, errorMessage) => {
 		const { userName, password } = req.body;
 		const user = await Model.findOne({ userName });
 		if (!user) {
-			return res.status(404).send({ message: errorMessage });
+			return res.status(401).send({ message: errorMessage });
 		}
 
 		const checkPassword = await comparePassword(password, user.password);
@@ -33,4 +33,15 @@ const loginUser = async (req, res, Model, errorMessage) => {
 	}
 };
 
-module.exports = { registerUser, loginUser };
+const update = async (req, res, Model) =>{
+	try {
+		const objectId = req.params.teamId;
+		const updateObject = req.body;
+		const editObject = await Model.findByIdAndUpdate(objectId, updateObject, { new: true });
+		res.json(editObject);
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
+}
+
+module.exports = { registerUser, loginUser, update};

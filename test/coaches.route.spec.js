@@ -54,12 +54,12 @@ describe('Test on coaches API', () => {
 			const coachCredentials = ({ userName, password } = newCoach);
 			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
 
-			expect(response.statusCode).toBe(200);
+			expect(response.status).toBe(200);
 			expect(response.body).toHaveProperty('data');
 			expect(response.body).toHaveProperty('token');
 		});
 
-		it('Should return a 404 error if coach does not exist', async () => {
+		it('Should return a 401 error if coach does not exist', async () => {
 			const coachCredentials = {
 				userName: 'noExiste',
 				password: 'cualquierPassword',
@@ -67,7 +67,7 @@ describe('Test on coaches API', () => {
 
 			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
 
-			expect(response.statusCode).toBe(404);
+			expect(response.status).toBe(401);
 			expect(response.body).toHaveProperty('message', 'Coach not found');
 		});
 

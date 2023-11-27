@@ -1,6 +1,7 @@
 'use strict';
 
 const TeamModel = require('../models/team.model');
+const { update } = require('./common.controllers');
 
 const getTeams = async (req, res) => {
 	try {
@@ -32,14 +33,7 @@ const createTeam = async (req, res) => {
 };
 
 const updateTeam = async (req, res) => {
-	try {
-		const teamId = req.params.teamId;
-		const updateObject = req.body;
-		const teamEdit = await TeamModel.findByIdAndUpdate(teamId, updateObject, { new: true });
-		res.json(teamEdit);
-	} catch (error) {
-		res.status(500).json({ error: error });
-	}
+	update(req, res, TeamModel);
 };
 
 const deleteTeam = async (req, res) => {

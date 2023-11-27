@@ -85,4 +85,22 @@ describe('Test on players API', () => {
 			expect(isOrdered(players, 'goals')).toBe(true);
 		});
 	})
+
+	describe('PUT Player /api/players/:id', ()=>{
+		beforeAll(async () => {
+			createdPlayer = await request(app).post('/api/players').send(newPlayer);
+		});
+
+		afterAll(async () => {
+			await PlayerModel.deleteMany({ name: createdPlayer.body.name });
+		});
+
+		it('Route "PUT" works', async () => {
+			const updatePlayer = { name: 'Player Updated' };
+			const response = await request(app).put(`/api/players/${createdPlayer.body._id}`).send(updatePlayer);
+
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+		});
+	})
 });

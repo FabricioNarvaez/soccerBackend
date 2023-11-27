@@ -1,4 +1,5 @@
 const PlayerModel = require('../models/players.model');
+const { update } = require('./common.controllers');
 
 const createPlayer = async (req, res) => {
 	try {
@@ -52,4 +53,8 @@ const getPlayers = async (req, res) => {
 	}
 };
 
-module.exports = { createPlayer, getPlayer, getPlayers};
+const updatePlayer = async (req, res) =>{
+	update(req, res, PlayerModel);
+};
+
+module.exports = { createPlayer, getPlayer, getPlayers, updatePlayer};
