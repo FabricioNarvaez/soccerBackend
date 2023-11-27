@@ -33,6 +33,15 @@ const loginUser = async (req, res, Model, errorMessage) => {
 	}
 };
 
+const deleteUser = async (req, res, Model, userId) => {
+	try {
+		const userDeleted = await Model.findByIdAndDelete(userId);
+		res.json(userDeleted);
+	} catch (error) {
+		res.status(500).json({ error: error });
+	}
+};
+
 const update = async (req, res, Model) =>{
 	try {
 		const objectId = req.params.teamId;
@@ -44,4 +53,4 @@ const update = async (req, res, Model) =>{
 	}
 }
 
-module.exports = { registerUser, loginUser, update};
+module.exports = { registerUser, loginUser, deleteUser, update};
