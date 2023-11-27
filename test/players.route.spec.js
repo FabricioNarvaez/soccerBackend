@@ -61,7 +61,7 @@ describe('Test on players API', () => {
 	});
 
 	describe('GET Players /api/players/all', () => {
-		beforeAll(async () =>{
+		beforeAll(async () => {
 			createdPlayer = await request(app).post('/api/players').send(newPlayer);
 		});
 
@@ -69,7 +69,7 @@ describe('Test on players API', () => {
 			await PlayerModel.deleteMany({ name: createdPlayer.body.name });
 		});
 
-		it('Should ret return all players', async ()=>{
+		it('Should ret return all players', async () => {
 			const getPlayersResponse = await request(app).get('/api/players/all').send();
 			expect(getPlayersResponse.status).toBe(200);
 
@@ -80,13 +80,13 @@ describe('Test on players API', () => {
 				return array.every((element, index, arrayHelper) => {
 					return index === 0 || element[key] <= arrayHelper[index - 1][key];
 				});
-			}
+			};
 
 			expect(isOrdered(players, 'goals')).toBe(true);
 		});
-	})
+	});
 
-	describe('PUT Player /api/players/:id', ()=>{
+	describe('PUT Player /api/players/:id', () => {
 		beforeAll(async () => {
 			createdPlayer = await request(app).post('/api/players').send(newPlayer);
 		});
@@ -102,5 +102,5 @@ describe('Test on players API', () => {
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
 		});
-	})
+	});
 });

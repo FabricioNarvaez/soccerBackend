@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { createPlayer, getPlayers,  getPlayer, updatePlayer } = require('../controllers/player.controller');
+const { createPlayer, getPlayers, getPlayer, updatePlayer } = require('../controllers/player.controller');
 
 router.post('/', createPlayer);
 router.get('/all', getPlayers);

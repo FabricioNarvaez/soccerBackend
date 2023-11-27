@@ -31,7 +31,7 @@ const getPlayer = async (req, res) => {
 		const playerFounded = await PlayerModel.findById(playerId).lean();
 		res.status(200).send({
 			status: 'success',
-			player: playerFounded
+			player: playerFounded,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error });
@@ -39,22 +39,21 @@ const getPlayer = async (req, res) => {
 };
 
 const getPlayers = async (req, res) => {
-	try{
+	try {
 		const playersFounded = await PlayerModel.find().lean();
-		if(playersFounded.length > 1)
-			playersFounded.sort((a, b) => b.goals - a.goals);
+		if (playersFounded.length > 1) playersFounded.sort((a, b) => b.goals - a.goals);
 
 		res.status(200).send({
 			status: 'success',
-			players: playersFounded
+			players: playersFounded,
 		});
 	} catch (error) {
 		res.status(500).json({ error: error });
 	}
 };
 
-const updatePlayer = async (req, res) =>{
+const updatePlayer = async (req, res) => {
 	update(req, res, PlayerModel);
 };
 
-module.exports = { createPlayer, getPlayer, getPlayers, updatePlayer};
+module.exports = { createPlayer, getPlayer, getPlayers, updatePlayer };
