@@ -52,10 +52,11 @@ describe('Test on players API', () => {
 		});
 
 		it('Route "GET Player" works', async () => {
-			const foundedPlayer = await request(app).get(`/api/players/${createdPlayer.body._id}`).send();
+			const playerFounded = await request(app).get(`/api/players/${createdPlayer.body._id}`).send();
+			expect(playerFounded.status).toBe(200);
 
-			expect(foundedPlayer.status).toBe(200);
-			expect(foundedPlayer.headers['content-type']).toContain('json');
+			const player = playerFounded.body.player;
+			expect(player.name).toBe(createdPlayer.body.name);
 		});
 	});
 

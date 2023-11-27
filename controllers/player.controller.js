@@ -27,8 +27,11 @@ const createPlayer = async (req, res) => {
 const getPlayer = async (req, res) => {
 	try {
 		const playerId = req.params.playerId;
-		const playerFounded = await PlayerModel.findById(playerId);
-		res.json(JSON.stringify(playerFounded, null, 2));
+		const playerFounded = await PlayerModel.findById(playerId).lean();
+		res.status(200).send({
+			status: 'success',
+			player: playerFounded
+		});
 	} catch (error) {
 		res.status(500).json({ error: error });
 	}
