@@ -95,12 +95,20 @@ describe('Test on players API', () => {
 			await PlayerModel.deleteMany({ name: createdPlayer.body.name });
 		});
 
-		it('Route "PUT" works', async () => {
+		it('Should update player', async () => {
 			const updatePlayer = { name: 'Player Updated' };
 			const response = await request(app).put(`/api/players/${createdPlayer.body._id}`).send(updatePlayer);
 
 			expect(response.status).toBe(200);
-			expect(response.headers['content-type']).toContain('json');
+			expect(response.body.editObject.name).toBe(updatePlayer.name);
+		});
+
+		it('Should return 500 status if players is not founded', async () => {
+			const updatePlayer = { name: 'Player Updated' };
+			const notValidId = 'not_valid_id';
+			const response = await request(app).put(`/api/players/${notValidId}`).send(updatePlayer);
+
+			expect(response.status).toBe(500);
 		});
 	});
 });

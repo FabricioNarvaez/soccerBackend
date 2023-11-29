@@ -166,11 +166,11 @@ describe('Test on teams API', () => {
 		});
 
 		it('Should updates team', async () => {
-			const update = { name: 'Team Updated' };
-			const response = await request(app).put(`/api/teams/${team._id}`).send(update);
+			const updateTeam = { name: 'Team Updated' };
+			const response = await request(app).put(`/api/teams/${team._id}`).send(updateTeam);
 
-			expect(response.body._id).toBeDefined();
-			expect(response.body.name).toBe(update.name);
+			expect(response.status).toBe(200);
+			expect(response.body.editObject.name).toBe(updateTeam.name);
 		});
 	});
 

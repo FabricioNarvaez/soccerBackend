@@ -4,6 +4,6 @@ const { createPlayer, getPlayers, getPlayer, updatePlayer } = require('../contro
 router.post('/', createPlayer);
 router.get('/all', getPlayers);
 router.get('/:playerId', getPlayer);
-router.put('/:playerId', updatePlayer);
+router.put('/:id', updatePlayer);
 
 module.exports = router;

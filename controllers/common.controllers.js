@@ -44,10 +44,15 @@ const deleteUser = async (req, res, Model, userId) => {
 
 const update = async (req, res, Model) => {
 	try {
-		const objectId = req.params.teamId;
+		const objectId = req.params.id;
 		const updateObject = req.body;
-		const editObject = await Model.findByIdAndUpdate(objectId, updateObject, { new: true });
-		res.json(editObject);
+		const editObject = await Model.findByIdAndUpdate(objectId, updateObject, { new: true }).lean();
+		if(editObject){
+			res.status(200).send({
+				status: 'success',
+				editObject,
+			});
+		}
 	} catch (error) {
 		res.status(500).json({ error: error });
 	}
