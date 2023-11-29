@@ -174,15 +174,15 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('DELETE /api/teams', () => {
+	describe('DELETE /api/teams/:id', () => {
 		it('Should deleats team', async () => {
-			const team = await TeamModel.create(newTeam);
+			const team = (await request(app).post('/api/teams').send(newTeam)).body;
 			const response = await request(app).delete(`/api/teams/${team._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
 
-			const foundTrip = await TeamModel.findById(team._id);
-			expect(foundTrip).toBeNull();
+			const teamFounded = await TeamModel.findById(team._id);
+			expect(teamFounded).toBeNull();
 		});
 
 		it('Should fail if team does not exist', async () => {

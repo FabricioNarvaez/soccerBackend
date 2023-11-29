@@ -35,7 +35,8 @@ const loginUser = async (req, res, Model, errorMessage) => {
 
 const deleteController = async (req, res, Model, userId) => {
 	try {
-		const userDeleted = await Model.findByIdAndDelete(userId);
+		const paramId = req.params.id;
+		const userDeleted = await Model.findByIdAndDelete(paramId);
 		res.json(userDeleted);
 	} catch (error) {
 		res.status(500).json({ error: error });

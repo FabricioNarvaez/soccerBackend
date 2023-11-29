@@ -37,8 +37,7 @@ const updateTeam = async (req, res) => {
 };
 
 const deleteTeam = async (req, res) => {
-	const teamId = req.params.teamId;
-	deleteController(req, res, TeamModel, teamId);
+	deleteController(req, res, TeamModel);
 };
 
 module.exports = { getTeams, createTeam, updateTeam, deleteTeam };

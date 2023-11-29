@@ -11,8 +11,7 @@ const logInCoach = async (req, res) => {
 };
 
 const deleteCoach = async (req, res) => {
-	const coachId = req.params.coachId;
-	deleteController(req, res, CoachModel, coachId);
+	deleteController(req, res, CoachModel);
 };
 
 module.exports = { registerCoach, logInCoach, deleteCoach };

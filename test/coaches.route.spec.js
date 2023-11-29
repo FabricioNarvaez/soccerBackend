@@ -84,7 +84,7 @@ describe('Test on coaches API', () => {
 		});
 	});
 
-	describe('DELETE /api/coaches', () => {
+	describe('DELETE /api/coaches/:id', () => {
 		it('Should deletes coach', async () => {
 			const coach = (await request(app).post('/api/coaches/register').send(newCoach)).body;
 			const response = await request(app).delete(`/api/coaches/${coach._id}`);

@@ -11,8 +11,7 @@ const logInAdmin = async (req, res) => {
 };
 
 const deleteAdmin = async (req, res) => {
-	const adminId = req.params.adminId;
-	deleteController(req, res, AdminModel, adminId);
+	deleteController(req, res, AdminModel);
 };
 
 module.exports = { registerAdmin, logInAdmin, deleteAdmin };

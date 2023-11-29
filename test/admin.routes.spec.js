@@ -85,7 +85,7 @@ describe('Test on admins API', () => {
 		});
 	});
 
-	describe('DELETE /api/admins', () => {
+	describe('DELETE /api/admins/:id', () => {
 		it('Should deletes admin', async () => {
 			const admin = (await request(app).post('/api/admins/register').send(newAdmin)).body;
 			const response = await request(app).delete(`/api/admins/${admin._id}`);

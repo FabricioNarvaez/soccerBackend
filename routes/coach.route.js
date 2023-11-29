@@ -3,6 +3,6 @@ const { registerCoach, logInCoach, deleteCoach } = require('../controllers/coach
 
 router.post('/register', registerCoach);
 router.post('/login', logInCoach);
-router.delete('/:coachId', deleteCoach);
+router.delete('/:id', deleteCoach);
 
 module.exports = router;

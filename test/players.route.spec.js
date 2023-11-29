@@ -116,4 +116,22 @@ describe('Test on players API', () => {
 			expect(response.status).toBe(500);
 		});
 	});
+
+	describe('DELETE /api/players/:id', () => {
+		it('Should deleats team', async () => {
+			const player = (await request(app).post('/api/players').send(newPlayer)).body;
+			const response = await request(app).delete(`/api/players/${player._id}`);
+			expect(response.status).toBe(200);
+			expect(response.headers['content-type']).toContain('json');
+
+			const playerFounded = await PlayerModel.findById(player._id);
+			expect(playerFounded).toBeNull();
+		});
+
+		it('Should fail if team does not exist', async () => {
+			const idFail = 'notExist';
+			const response = await request(app).delete(`/api/teams/${idFail}`);
+			expect(response.status).toBe(500);
+		});
+	});
 });

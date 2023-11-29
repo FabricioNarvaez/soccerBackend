@@ -4,6 +4,6 @@ const { getTeams, createTeam, updateTeam, deleteTeam } = require('../controllers
 router.get('/', getTeams);
 router.post('/', createTeam);
 router.put('/:id', updateTeam);
-router.delete('/:teamId', deleteTeam);
+router.delete('/:id', deleteTeam);
 
 module.exports = router;

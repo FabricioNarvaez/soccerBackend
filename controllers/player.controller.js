@@ -1,5 +1,5 @@
 const PlayerModel = require('../models/players.model');
-const { updateController } = require('./common.controllers');
+const { updateController, deleteController } = require('./common.controllers');
 
 const createPlayer = async (req, res) => {
 	try {
@@ -56,4 +56,8 @@ const updatePlayer = async (req, res) => {
 	updateController(req, res, PlayerModel);
 };
 
-module.exports = { createPlayer, getPlayer, getPlayers, updatePlayer };
+const deleteTeam = async (req, res) => {
+	deleteController(req, res, PlayerModel);
+};
+
+module.exports = { createPlayer, getPlayer, getPlayers, updatePlayer, deleteTeam };
