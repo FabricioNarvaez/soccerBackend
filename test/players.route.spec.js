@@ -69,7 +69,12 @@ describe('Test on players API', () => {
 			await PlayerModel.deleteMany({ name: createdPlayer.body.name });
 		});
 
-		it('Should ret return all players', async () => {
+		it('Should ret return all players ordered by goals', async () => {
+			const secondPlayer = await request(app).post('/api/players').send(newPlayer);
+			const secondPlayerId = secondPlayer.body._id;
+			const updateSecondPlayers = { goals: 2};
+			await request(app).put(`/api/players/${secondPlayerId}`).send(updateSecondPlayers);
+
 			const getPlayersResponse = await request(app).get('/api/players/all').send();
 			expect(getPlayersResponse.status).toBe(200);
 
@@ -87,16 +92,17 @@ describe('Test on players API', () => {
 	});
 
 	describe('PUT Player /api/players/:id', () => {
+		const updatePlayer = { name: 'Player Updated' };
+
 		beforeAll(async () => {
 			createdPlayer = await request(app).post('/api/players').send(newPlayer);
 		});
 
 		afterAll(async () => {
-			await PlayerModel.deleteMany({ name: createdPlayer.body.name });
+			await PlayerModel.deleteMany({ name: updatePlayer.name });
 		});
 
 		it('Should update player', async () => {
-			const updatePlayer = { name: 'Player Updated' };
 			const response = await request(app).put(`/api/players/${createdPlayer.body._id}`).send(updatePlayer);
 
 			expect(response.status).toBe(200);
@@ -104,7 +110,6 @@ describe('Test on players API', () => {
 		});
 
 		it('Should return 500 status if players is not founded', async () => {
-			const updatePlayer = { name: 'Player Updated' };
 			const notValidId = 'not_valid_id';
 			const response = await request(app).put(`/api/players/${notValidId}`).send(updatePlayer);
 
