@@ -33,7 +33,7 @@ const loginUser = async (req, res, Model, errorMessage) => {
 	}
 };
 
-const deleteUser = async (req, res, Model, userId) => {
+const deleteController = async (req, res, Model, userId) => {
 	try {
 		const userDeleted = await Model.findByIdAndDelete(userId);
 		res.json(userDeleted);
@@ -58,4 +58,4 @@ const updateController = async (req, res, Model) => {
 	}
 };
 
-module.exports = { registerUser, loginUser, deleteUser, updateController };
+module.exports = { registerUser, loginUser, deleteController, updateController };
