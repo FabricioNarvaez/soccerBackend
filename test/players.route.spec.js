@@ -70,10 +70,9 @@ describe('Test on players API', () => {
 		});
 
 		it('Should ret return all players ordered by goals', async () => {
-			const secondPlayer = await request(app).post('/api/players').send(newPlayer);
-			const secondPlayerId = secondPlayer.body._id;
-			const updateSecondPlayers = { goals: 2};
-			await request(app).put(`/api/players/${secondPlayerId}`).send(updateSecondPlayers);
+			const secondPlayer = (await request(app).post('/api/players').send(newPlayer)).body;
+			const updateSecondPlayers = { goals: 2 };
+			await request(app).put(`/api/players/${secondPlayer._id}`).send(updateSecondPlayers);
 
 			const getPlayersResponse = await request(app).get('/api/players/all').send();
 			expect(getPlayersResponse.status).toBe(200);

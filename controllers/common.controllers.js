@@ -48,7 +48,7 @@ const updateController = async (req, res, Model) => {
 		const objectId = req.params.id;
 		const updateObject = req.body;
 		const editObject = await Model.findByIdAndUpdate(objectId, updateObject, { new: true }).lean();
-		if(editObject){
+		if (editObject) {
 			res.status(200).send({
 				status: 'success',
 				editObject,

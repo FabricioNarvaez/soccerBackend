@@ -59,9 +59,9 @@ describe('Test on teams API', () => {
 			newTeam.coach = teamcoachTest.body._id;
 
 			await request(app).post('/api/teams').send(newTeam);
-			response = await request(app).get('/api/teams').send();
+			response = (await request(app).get('/api/teams').send()).body;
 
-			expect(response.body).toBeInstanceOf(Array);
+			expect(response).toBeInstanceOf(Array);
 
 			const columns = [
 				'name',
@@ -77,7 +77,7 @@ describe('Test on teams API', () => {
 				'group',
 			];
 
-			response.body.forEach((team) => {
+			response.forEach((team) => {
 				columns.forEach((column) => {
 					expect(team[column]).toBeDefined();
 					switch (column) {

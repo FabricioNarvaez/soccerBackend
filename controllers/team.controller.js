@@ -1,7 +1,7 @@
 'use strict';
 
 const TeamModel = require('../models/team.model');
-const { updateController,  deleteController } = require('./common.controllers');
+const { updateController, deleteController } = require('./common.controllers');
 
 const getTeams = async (req, res) => {
 	try {
