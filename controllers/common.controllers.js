@@ -42,7 +42,7 @@ const deleteUser = async (req, res, Model, userId) => {
 	}
 };
 
-const update = async (req, res, Model) => {
+const updateController = async (req, res, Model) => {
 	try {
 		const objectId = req.params.id;
 		const updateObject = req.body;
@@ -58,4 +58,4 @@ const update = async (req, res, Model) => {
 	}
 };
 
-module.exports = { registerUser, loginUser, deleteUser, update };
+module.exports = { registerUser, loginUser, deleteUser, updateController };

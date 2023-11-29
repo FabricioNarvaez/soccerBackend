@@ -1,5 +1,5 @@
 const PlayerModel = require('../models/players.model');
-const { update } = require('./common.controllers');
+const { updateController } = require('./common.controllers');
 
 const createPlayer = async (req, res) => {
 	try {
@@ -53,7 +53,7 @@ const getPlayers = async (req, res) => {
 };
 
 const updatePlayer = async (req, res) => {
-	update(req, res, PlayerModel);
+	updateController(req, res, PlayerModel);
 };
 
 module.exports = { createPlayer, getPlayer, getPlayers, updatePlayer };
