@@ -117,7 +117,7 @@ describe('Test on players API', () => {
 	});
 
 	describe('DELETE /api/players/:id', () => {
-		it('Should deleats team', async () => {
+		it('Should deletes team', async () => {
 			const player = (await request(app).post('/api/players').send(newPlayer)).body;
 			const response = await request(app).delete(`/api/players/${player._id}`);
 			expect(response.status).toBe(200);

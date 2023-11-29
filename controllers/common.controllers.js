@@ -33,7 +33,7 @@ const loginUser = async (req, res, Model, errorMessage) => {
 	}
 };
 
-const deleteController = async (req, res, Model, userId) => {
+const deleteController = async (req, res, Model) => {
 	try {
 		const paramId = req.params.id;
 		const userDeleted = await Model.findByIdAndDelete(paramId);

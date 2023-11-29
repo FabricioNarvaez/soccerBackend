@@ -55,8 +55,8 @@ describe('Test on teams API', () => {
 		});
 
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', async () => {
-			const teamcoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
-			newTeam.coach = teamcoachTest.body._id;
+			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
+			newTeam.coach = teamCoachTest.body._id;
 
 			await request(app).post('/api/teams').send(newTeam);
 			response = (await request(app).get('/api/teams').send()).body;
