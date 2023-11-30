@@ -55,13 +55,13 @@ describe('Test on teams API', () => {
 		});
 
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', async () => {
-			const teamcoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
-			newTeam.coach = teamcoachTest.body._id;
+			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
+			newTeam.coach = teamCoachTest.body._id;
 
 			await request(app).post('/api/teams').send(newTeam);
-			response = await request(app).get('/api/teams').send();
+			response = (await request(app).get('/api/teams').send()).body;
 
-			expect(response.body).toBeInstanceOf(Array);
+			expect(response).toBeInstanceOf(Array);
 
 			const columns = [
 				'name',
@@ -77,7 +77,7 @@ describe('Test on teams API', () => {
 				'group',
 			];
 
-			response.body.forEach((team) => {
+			response.forEach((team) => {
 				columns.forEach((column) => {
 					expect(team[column]).toBeDefined();
 					switch (column) {
@@ -166,24 +166,23 @@ describe('Test on teams API', () => {
 		});
 
 		it('Should updates team', async () => {
-			const update = { name: 'Team Updated' };
-			const response = await request(app).put(`/api/teams/${team._id}`).send(update);
+			const updateTeam = { name: 'Team Updated' };
+			const response = await request(app).put(`/api/teams/${team._id}`).send(updateTeam);
 
-			expect(response.body._id).toBeDefined();
-			expect(response.body.name).toBe(update.name);
+			expect(response.status).toBe(200);
+			expect(response.body.editObject.name).toBe(updateTeam.name);
 		});
 	});
 
-	describe('DELETE /api/teams', () => {
-
-		it('Should deleats team', async () => {
-			const team = await TeamModel.create(newTeam);
+	describe('DELETE /api/teams/:id', () => {
+		it('Should deletes team', async () => {
+			const team = (await request(app).post('/api/teams').send(newTeam)).body;
 			const response = await request(app).delete(`/api/teams/${team._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
 
-			const foundTrip = await TeamModel.findById(team._id);
-			expect(foundTrip).toBeNull();
+			const foundTeam = await TeamModel.findById(team._id);
+			expect(foundTeam).toBeNull();
 		});
 
 		it('Should fail if team does not exist', async () => {

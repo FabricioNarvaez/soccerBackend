@@ -1,5 +1,5 @@
 const CoachModel = require('../models/coach.model');
-const { registerUser, loginUser, deleteUser } = require('./common.controllers');
+const { registerUser, loginUser, deleteController } = require('./common.controllers');
 
 const registerCoach = async (req, res) => {
 	registerUser(req, res, CoachModel);
@@ -11,8 +11,7 @@ const logInCoach = async (req, res) => {
 };
 
 const deleteCoach = async (req, res) => {
-	const coachId = req.params.coachId;
-	deleteUser(req, res, CoachModel, coachId);
+	deleteController(req, res, CoachModel);
 };
 
 module.exports = { registerCoach, logInCoach, deleteCoach };

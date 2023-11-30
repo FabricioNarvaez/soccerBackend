@@ -60,7 +60,7 @@ describe('Test on admins API', () => {
 			expect(response.body).toHaveProperty('token');
 		});
 
-		it('Should return a 404 error if admin does not exist', async () => {
+		it('Should return a 401 error if admin does not exist', async () => {
 			const adminCredentials = {
 				userName: 'noExiste',
 				password: 'password',
@@ -68,7 +68,7 @@ describe('Test on admins API', () => {
 
 			const response = await request(app).post('/api/admins/login').send(adminCredentials);
 
-			expect(response.statusCode).toBe(404);
+			expect(response.statusCode).toBe(401);
 			expect(response.body).toHaveProperty('message', 'Admin not found');
 		});
 
@@ -85,7 +85,7 @@ describe('Test on admins API', () => {
 		});
 	});
 
-	describe('DELETE /api/admins', () => {
+	describe('DELETE /api/admins/:id', () => {
 		it('Should deletes admin', async () => {
 			const admin = (await request(app).post('/api/admins/register').send(newAdmin)).body;
 			const response = await request(app).delete(`/api/admins/${admin._id}`);

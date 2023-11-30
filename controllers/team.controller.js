@@ -1,6 +1,7 @@
 'use strict';
 
 const TeamModel = require('../models/team.model');
+const { updateController, deleteController } = require('./common.controllers');
 
 const getTeams = async (req, res) => {
 	try {
@@ -32,24 +33,11 @@ const createTeam = async (req, res) => {
 };
 
 const updateTeam = async (req, res) => {
-	try {
-		const teamId = req.params.teamId;
-		const updateObject = req.body;
-		const teamEdit = await TeamModel.findByIdAndUpdate(teamId, updateObject, { new: true });
-		res.json(teamEdit);
-	} catch (error) {
-		res.status(500).json({ error: error });
-	}
+	updateController(req, res, TeamModel);
 };
 
 const deleteTeam = async (req, res) => {
-	try {
-		const teamId = req.params.teamId;
-		const teamDelete = await TeamModel.findByIdAndDelete(teamId);
-		res.json(teamDelete);
-	} catch (error) {
-		res.status(500).json({ error: error });
-	}
+	deleteController(req, res, TeamModel);
 };
 
 module.exports = { getTeams, createTeam, updateTeam, deleteTeam };

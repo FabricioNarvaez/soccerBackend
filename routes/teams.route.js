@@ -3,7 +3,7 @@ const { getTeams, createTeam, updateTeam, deleteTeam } = require('../controllers
 
 router.get('/', getTeams);
 router.post('/', createTeam);
-router.put('/:teamId', updateTeam);
-router.delete('/:teamId', deleteTeam);
+router.put('/:id', updateTeam);
+router.delete('/:id', deleteTeam);
 
 module.exports = router;
