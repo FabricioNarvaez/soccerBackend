@@ -4,12 +4,19 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const TeamModel = require('../models/team.model');
 const CoachModel = require('../models/coach.model');
+const PlayerModel = require('../models/players.model');
 
 describe('Test on teams API', () => {
 	const coachTeam = {
 		userName: 'testCoach',
 		password: 'passwordCoach',
 		name: 'Test Coach',
+	};
+
+	const newPlayer = {
+		name: 'PlayerTest',
+		playerNumber: 0,
+		alias: 'Test',
 	};
 
 	const newTeam = {
@@ -37,12 +44,20 @@ describe('Test on teams API', () => {
 		let response;
 
 		beforeEach(async () => {
+			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
+			newTeam.coach = teamCoachTest.body._id;
+
+			const createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			newTeam.players.push(createdPlayer.body._id);
+			
+			await request(app).post('/api/teams').send(newTeam);
 			response = await request(app).get('/api/teams').send();
 		});
 
 		afterAll(async () => {
 			await CoachModel.deleteMany({ userName: coachTeam.userName });
 			await TeamModel.deleteMany({ name: newTeam.name });
+			await PlayerModel.deleteMany({ name: newPlayer.name });
 		});
 
 		it('Route "GET" works', async () => {
@@ -50,15 +65,7 @@ describe('Test on teams API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-		it('Request returns an array of teams', () => {
-			expect(response.body).toBeInstanceOf(Array);
-		});
-
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', async () => {
-			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
-			newTeam.coach = teamCoachTest.body._id;
-
-			await request(app).post('/api/teams').send(newTeam);
 			response = (await request(app).get('/api/teams').send()).body;
 
 			expect(response).toBeInstanceOf(Array);
@@ -72,7 +79,7 @@ describe('Test on teams API', () => {
 				'GF',
 				'GC',
 				'shield',
-				'players',
+				'playersDetails',
 				'coachName',
 				'group',
 			];
@@ -94,7 +101,7 @@ describe('Test on teams API', () => {
 						case 'GC':
 							expect(typeof team[column]).toBe('number');
 							break;
-						case 'players':
+						case 'playersDetails':
 							expect(typeof team[column]).toBe('object');
 							break;
 
@@ -103,6 +110,15 @@ describe('Test on teams API', () => {
 					}
 				});
 			});
+		});
+
+		it('Should return players info', async () => {
+			response = (await request(app).get('/api/teams').send()).body;
+			expect(response).toBeInstanceOf(Array);
+			response.forEach((team)=>{
+				expect(team.players).toBe(undefined);
+				expect(team.playersDetails).toBeInstanceOf(Array);
+			})
 		});
 	});
 

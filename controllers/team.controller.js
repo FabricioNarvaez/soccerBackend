@@ -14,8 +14,19 @@ const getTeams = async (req, res) => {
 					as: 'coachTeam',
 				},
 			},
-			{ $addFields: { 'coachName': { $arrayElemAt: ['$coachTeam.name', 0] } } },
-			{ $project: { 'coachTeam': 0 } },
+			{
+				$lookup: {
+				  from: 'players',
+				  localField: 'players',
+				  foreignField: '_id',
+				  as: 'playersInfo',
+				},
+			},
+			{ $addFields: { 
+				'coachName': { $arrayElemAt: ['$coachTeam.name', 0] },
+				'playersDetails': '$playersInfo',
+			}},
+			{ $project: { 'coachTeam': 0, 'playersInfo': 0, 'players': 0 } },
 		]);
 		res.json(teams);
 	} catch (error) {
