@@ -13,14 +13,14 @@ describe('Test on teams API', () => {
 	};
 
 	const newTeam = {
-		name: 'Prueba Equipo',
-		acronym: 'PE',
+		name: 'Test Team',
+		acronym: 'TT',
 		PG: 0,
 		PE: 0,
 		PP: 0,
 		GF: 0,
 		GC: 0,
-		shield: 'Sin escudo',
+		shield: 'Without shield',
 		players: [],
 		group: 'A',
 	};
@@ -107,19 +107,6 @@ describe('Test on teams API', () => {
 	});
 
 	describe('POST /api/teams', () => {
-		const wrongTeam = {
-			name: 'Prueba Equipo',
-			acronym: 'PE',
-			PG: 0,
-			PE: 0,
-			PP: 0,
-			GF: 0,
-			GC: 0,
-			group: 'A',
-			shield: 'Sin escudo',
-			players: {},
-		};
-
 		afterAll(async () => {
 			await TeamModel.deleteMany({ name: newTeam.name });
 		});
@@ -138,11 +125,31 @@ describe('Test on teams API', () => {
 			expect(response.body.name).toBe(newTeam.name);
 		});
 
+		it('Should add new team and change shield if it is empty', async () => {
+			const emptyShieldTeam = {
+				name: 'Test Team',
+				acronym: 'TT',
+				group: 'A',
+				shield: '',
+				players: {},
+			};
+			const response = await request(app).post('/api/teams').send(emptyShieldTeam);
+
+			expect(response.body._id).toBeDefined();
+			expect(response.body.name).toBe(newTeam.name);
+			expect(response.body.shield).toBe(
+				'https://res.cloudinary.com/dzd68sxue/image/upload/v1695055988/default_bnoacd.png',
+			);
+		});
+
 		it('Should not add new team', async () => {
-			const response = await request(app).post('/api/teams').send(wrongTeam);
+			const errorMock = new Error('Error creating team');
+			jest.spyOn(TeamModel, 'create').mockRejectedValue(errorMock);
+			const response = await request(app).post('/api/teams').send({});
 
 			expect(response.status).toBe(500);
 			expect(response.body.error).toBeDefined();
+			jest.restoreAllMocks();
 		});
 	});
 
@@ -175,7 +182,6 @@ describe('Test on teams API', () => {
 	});
 
 	describe('DELETE /api/teams', () => {
-
 		it('Should deleats team', async () => {
 			const team = await TeamModel.create(newTeam);
 			const response = await request(app).delete(`/api/teams/${team._id}`);
