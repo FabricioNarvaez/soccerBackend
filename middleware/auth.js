@@ -1,9 +1,9 @@
-const { veryfyToken } = require('../helpers/generateToken');
+const { verifyToken } = require('../helpers/generateToken');
 
 const checkAuth = async (req, res, next) => {
 	try {
 		const { token } = req.body;
-		const tokenData = await veryfyToken(token);
+		const tokenData = await verifyToken(token);
 		if (tokenData.id) {
 			next();
 		} else {

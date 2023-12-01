@@ -1,5 +1,5 @@
 const AdminModel = require('../models/admin.model');
-const { registerUser, loginUser, deleteUser } = require('./common.controllers');
+const { registerUser, loginUser, deleteController } = require('./common.controllers');
 
 const registerAdmin = async (req, res) => {
 	registerUser(req, res, AdminModel);
@@ -11,8 +11,7 @@ const logInAdmin = async (req, res) => {
 };
 
 const deleteAdmin = async (req, res) => {
-	const adminId = req.params.adminId;
-	deleteUser(req, res, AdminModel, adminId);
+	deleteController(req, res, AdminModel);
 };
 
 module.exports = { registerAdmin, logInAdmin, deleteAdmin };
