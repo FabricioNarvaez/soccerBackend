@@ -15,7 +15,7 @@ describe('Test on teams API', () => {
 	const newTeam = {
 		name: 'Test Team',
 		acronym: 'TT',
-		shield: 'Without shield',
+		shield: '',
 		players: [],
 		group: 'A',
 	};
@@ -114,7 +114,6 @@ describe('Test on teams API', () => {
 		});
 
 		it('Should add new team with default shield if it is empty', async () => {
-			newTeam.shield = '';
 			const response = await request(app).post('/api/teams').send(newTeam);
 
 			expect(response.body._id).toBeDefined();
