@@ -26,7 +26,7 @@ const getTeams = async (req, res) => {
 				'coachName': { $arrayElemAt: ['$coachTeam.name', 0] },
 				'playersDetails': '$playersInfo',
 				'GD': { $subtract: ['$GF', '$GC'] },
-				'Pts.': {
+				'pts': {
 					$add: [
 					  { $multiply: ['$PG', 3] },
 					  '$PE',
