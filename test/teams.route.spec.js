@@ -15,11 +15,6 @@ describe('Test on teams API', () => {
 	const newTeam = {
 		name: 'Test Team',
 		acronym: 'TT',
-		PG: 0,
-		PE: 0,
-		PP: 0,
-		GF: 0,
-		GC: 0,
 		shield: 'Without shield',
 		players: [],
 		group: 'A',
@@ -107,7 +102,7 @@ describe('Test on teams API', () => {
 	});
 
 	describe('POST /api/teams', () => {
-		afterAll(async () => {
+		afterEach(async () => {
 			await TeamModel.deleteMany({ name: newTeam.name });
 		});
 
@@ -125,21 +120,24 @@ describe('Test on teams API', () => {
 			expect(response.body.name).toBe(newTeam.name);
 		});
 
-		it('Should add new team and change shield if it is empty', async () => {
-			const emptyShieldTeam = {
-				name: 'Test Team',
-				acronym: 'TT',
-				group: 'A',
-				shield: '',
-				players: {},
-			};
-			const response = await request(app).post('/api/teams').send(emptyShieldTeam);
+		it('Should add new team with default shield if it is empty', async () => {
+			newTeam.shield = '';
+			const response = await request(app).post('/api/teams').send(newTeam);
 
 			expect(response.body._id).toBeDefined();
 			expect(response.body.name).toBe(newTeam.name);
 			expect(response.body.shield).toBe(
 				'https://res.cloudinary.com/dzd68sxue/image/upload/v1695055988/default_bnoacd.png',
 			);
+		});
+
+		it('Should add new team with custom shield', async () => {
+			newTeam.shield = 'https://customShield.com/sample.png';
+			const response = await request(app).post('/api/teams').send(newTeam);
+
+			expect(response.body._id).toBeDefined();
+			expect(response.body.name).toBe(newTeam.name);
+			expect(response.body.shield).toBe('https://customShield.com/sample.png');
 		});
 
 		it('Should not add new team', async () => {
