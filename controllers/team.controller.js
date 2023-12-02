@@ -25,8 +25,26 @@ const getTeams = async (req, res) => {
 
 const createTeam = async (req, res) => {
 	try {
-		const newTeam = await TeamModel.create(req.body);
-		res.json(newTeam);
+		const { name, coach, acronym, shield, group } = req.body;
+
+		const newTeamToInsert = {
+			name,
+			acronym,
+			PG: 0,
+			PP: 0,
+			PE: 0,
+			GF: 0,
+			GC: 0,
+			shield:
+				shield !== ''
+					? shield
+					: 'https://res.cloudinary.com/dzd68sxue/image/upload/v1695055988/default_bnoacd.png',
+			group,
+			coach,
+		};
+
+		const insertedTeam = await TeamModel.create(newTeamToInsert);
+		res.json(insertedTeam);
 	} catch (error) {
 		res.status(500).json({ error: error });
 	}

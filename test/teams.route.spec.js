@@ -13,14 +13,9 @@ describe('Test on teams API', () => {
 	};
 
 	const newTeam = {
-		name: 'Prueba Equipo',
-		acronym: 'PE',
-		PG: 0,
-		PE: 0,
-		PP: 0,
-		GF: 0,
-		GC: 0,
-		shield: 'Sin escudo',
+		name: 'Test Team',
+		acronym: 'TT',
+		shield: '',
 		players: [],
 		group: 'A',
 	};
@@ -107,20 +102,7 @@ describe('Test on teams API', () => {
 	});
 
 	describe('POST /api/teams', () => {
-		const wrongTeam = {
-			name: 'Prueba Equipo',
-			acronym: 'PE',
-			PG: 0,
-			PE: 0,
-			PP: 0,
-			GF: 0,
-			GC: 0,
-			group: 'A',
-			shield: 'Sin escudo',
-			players: {},
-		};
-
-		afterAll(async () => {
+		afterEach(async () => {
 			await TeamModel.deleteMany({ name: newTeam.name });
 		});
 
@@ -131,18 +113,33 @@ describe('Test on teams API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-		it('Should add new team', async () => {
+		it('Should add new team with default shield if it is empty', async () => {
 			const response = await request(app).post('/api/teams').send(newTeam);
 
 			expect(response.body._id).toBeDefined();
 			expect(response.body.name).toBe(newTeam.name);
+			expect(response.body.shield).toBe(
+				'https://res.cloudinary.com/dzd68sxue/image/upload/v1695055988/default_bnoacd.png',
+			);
+		});
+
+		it('Should add new team with custom shield', async () => {
+			newTeam.shield = 'https://customShield.com/sample.png';
+			const response = await request(app).post('/api/teams').send(newTeam);
+
+			expect(response.body._id).toBeDefined();
+			expect(response.body.name).toBe(newTeam.name);
+			expect(response.body.shield).toBe('https://customShield.com/sample.png');
 		});
 
 		it('Should not add new team', async () => {
-			const response = await request(app).post('/api/teams').send(wrongTeam);
+			const errorMock = new Error('Error creating team');
+			jest.spyOn(TeamModel, 'create').mockRejectedValue(errorMock);
+			const response = await request(app).post('/api/teams').send({});
 
 			expect(response.status).toBe(500);
 			expect(response.body.error).toBeDefined();
+			jest.restoreAllMocks();
 		});
 	});
 
