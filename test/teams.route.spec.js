@@ -43,7 +43,7 @@ describe('Test on teams API', () => {
 	describe('GET /api/teams', () => {
 		let response;
 
-		beforeEach(async () => {
+		beforeAll(async () => {
 			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
 			newTeam.coach = teamCoachTest.body._id;
 
@@ -66,9 +66,9 @@ describe('Test on teams API', () => {
 		});
 
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, shield, players, coachName, group]', async () => {
-			response = (await request(app).get('/api/teams').send()).body;
+			const allTeams = (response).body;
 
-			expect(response).toBeInstanceOf(Array);
+			expect(allTeams).toBeInstanceOf(Array);
 
 			const columns = [
 				'name',
@@ -85,7 +85,7 @@ describe('Test on teams API', () => {
 				'group',
 			];
 
-			response.forEach((team) => {
+			allTeams.forEach((team) => {
 				columns.forEach((column) => {
 					expect(team[column]).toBeDefined();
 					switch (column) {
@@ -115,14 +115,13 @@ describe('Test on teams API', () => {
 		});
 
 		it('Should return correct GD', async() =>{
-			response = response.body[0];
-			expect(response.GD).toBe(newTeam.GF - newTeam.GC);
+			const firstTeam = response.body[0];
+			expect(firstTeam.GD).toBe(newTeam.GF - newTeam.GC);
 		})
 
 		it('Should return players info', async () => {
-			response = (await request(app).get('/api/teams').send()).body;
-			expect(response).toBeInstanceOf(Array);
-			response.forEach((team)=>{
+			const allTeams = (response).body;
+			allTeams.forEach((team)=>{
 				expect(team.players).toBe(undefined);
 				expect(team.playersDetails).toBeInstanceOf(Array);
 			})

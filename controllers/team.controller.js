@@ -25,7 +25,13 @@ const getTeams = async (req, res) => {
 			{ $addFields: { 
 				'coachName': { $arrayElemAt: ['$coachTeam.name', 0] },
 				'playersDetails': '$playersInfo',
-				'GD': { $subtract: ['$GF', '$GC'] }
+				'GD': { $subtract: ['$GF', '$GC'] },
+				'points': {
+					$add: [
+					  { $multiply: ['$PG', 3] },
+					  '$PE',
+					]
+				},
 			}},
 			{ $project: { 'coachTeam': 0, 'playersInfo': 0, 'players': 0 } },
 		]);
