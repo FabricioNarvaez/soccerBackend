@@ -65,7 +65,7 @@ describe('Test on teams API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, shield, players, coachName, group]', async () => {
+		it.only('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, shield, players, coachName, group]', async () => {
 			const allTeams = (response).body;
 
 			expect(allTeams).toBeInstanceOf(Array);
