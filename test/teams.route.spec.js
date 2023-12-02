@@ -22,8 +22,8 @@ describe('Test on teams API', () => {
 	const newTeam = {
 		name: 'Prueba Equipo',
 		acronym: 'PE',
-		PG: 0,
-		PE: 0,
+		PG: 1,
+		PE: 1,
 		PP: 0,
 		GF: 2,
 		GC: 1,
@@ -65,7 +65,7 @@ describe('Test on teams API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, shield, players, coachName, group]', async () => {
+		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, Pts, shield, players, coachName, group]', async () => {
 			const allTeams = (response).body;
 
 			expect(allTeams).toBeInstanceOf(Array);
@@ -79,6 +79,7 @@ describe('Test on teams API', () => {
 				'GF',
 				'GC',
 				'GD',
+				'Pts',
 				'shield',
 				'playersDetails',
 				'coachName',
@@ -101,6 +102,7 @@ describe('Test on teams API', () => {
 						case 'GF':
 						case 'GC':
 						case 'GD':
+						case 'Pts':
 							expect(typeof team[column]).toBe('number');
 							break;
 						case 'playersDetails':
@@ -114,9 +116,10 @@ describe('Test on teams API', () => {
 			});
 		});
 
-		it('Should return correct GD', async() =>{
+		it('Should return correct GD and Pts', async() =>{
 			const firstTeam = response.body[0];
 			expect(firstTeam.GD).toBe(newTeam.GF - newTeam.GC);
+			expect(firstTeam.Pts).toBe(newTeam.PG * 3 + newTeam.PE);
 		})
 
 		it('Should return players info', async () => {
