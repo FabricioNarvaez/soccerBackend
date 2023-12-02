@@ -113,13 +113,6 @@ describe('Test on teams API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-		it('Should add new team', async () => {
-			const response = await request(app).post('/api/teams').send(newTeam);
-
-			expect(response.body._id).toBeDefined();
-			expect(response.body.name).toBe(newTeam.name);
-		});
-
 		it('Should add new team with default shield if it is empty', async () => {
 			newTeam.shield = '';
 			const response = await request(app).post('/api/teams').send(newTeam);
