@@ -3,12 +3,21 @@ const app = require('../app');
 const request = require('supertest');
 const mongoose = require('mongoose');
 const CoachModel = require('../models/coach.model');
+const TeamModel = require('../models/team.model');
 
 describe('Test on coaches API', () => {
 	const newCoach = {
 		userName: 'testCoach',
 		password: 'passwordCoach',
 		name: 'Test Coach',
+	};
+
+	const newTeam = {
+		name: 'Test Team',
+		acronym: 'TT',
+		shield: '',
+		players: [],
+		group: 'A',
 	};
 
 	beforeAll(async () => {
@@ -19,9 +28,47 @@ describe('Test on coaches API', () => {
 		await mongoose.disconnect();
 	});
 
-	describe('POST /api/coaches/register', () => {
+	describe('Get Coach Team Info', () => {
+		let coach;
+
+		beforeAll(async () => {
+			coach = (await request(app).post('/api/coaches/register').send(newCoach)).body;
+		});
+
 		afterAll(async () => {
-			await CoachModel.deleteMany({ userName: 'testCoach' });
+			await TeamModel.deleteMany({ name: newTeam.name });
+			await CoachModel.deleteMany({ name: newCoach.name });
+		});
+
+		it('Should return coach team info', async () => {
+			newTeam.coach = coach._id;
+			await request(app).post('/api/teams').send(newTeam);
+			const teamInfo = await request(app).get(`/api/coaches/team/${coach._id}`).send();
+
+			const columns = [
+				'_id',
+				'name',
+				'acronym',
+				'PG',
+				'PP',
+				'PE',
+				'GF',
+				'GC',
+				'shield',
+				'playersDetails',
+				'group',
+			];
+
+			expect(teamInfo.body.name).toBe(newTeam.name);
+			columns.forEach((key) => {
+				expect(teamInfo.body[key]).toBeDefined();
+			});
+		});
+	});
+
+	describe('Create Coach', () => {
+		afterAll(async () => {
+			await CoachModel.deleteMany({ name: newCoach.name });
 		});
 
 		it('Route "POST" works', async () => {
@@ -39,7 +86,7 @@ describe('Test on coaches API', () => {
 		});
 	});
 
-	describe('POST /api/coaches/login', () => {
+	describe('Login Coach', () => {
 		let coach;
 
 		beforeAll(async () => {
@@ -47,7 +94,7 @@ describe('Test on coaches API', () => {
 		});
 
 		afterAll(async () => {
-			await CoachModel.findByIdAndDelete(coach._id);
+			await CoachModel.deleteMany({ name: newCoach.name });
 		});
 
 		it('Should return a token when authenticating an existing coach', async () => {
@@ -80,12 +127,12 @@ describe('Test on coaches API', () => {
 			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
 
 			expect(response.status).toBe(401);
-			// TODO: Comprobar por que en algunos casos falla 
+			// TODO: Comprobar por que en algunos casos falla
 			// expect(response.body).toHaveProperty('message', 'Unauthorized');
 		});
 	});
 
-	describe('DELETE /api/coaches/:id', () => {
+	describe('Delete Coach', () => {
 		it('Should deletes coach', async () => {
 			const coach = (await request(app).post('/api/coaches/register').send(newCoach)).body;
 			const response = await request(app).delete(`/api/coaches/${coach._id}`);
