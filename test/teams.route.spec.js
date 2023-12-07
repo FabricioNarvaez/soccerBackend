@@ -44,7 +44,7 @@ describe('Test on teams API', () => {
 
 			const createdPlayer = await request(app).post('/api/players').send(newPlayer);
 			newTeam.players.push(createdPlayer.body._id);
-			
+
 			await request(app).post('/api/teams').send(newTeam);
 			response = await request(app).get('/api/teams').send();
 		});
@@ -61,7 +61,7 @@ describe('Test on teams API', () => {
 		});
 
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, Pts, shield, players, coachName, group]', async () => {
-			const allTeams = (response).body;
+			const allTeams = response.body;
 
 			expect(allTeams).toBeInstanceOf(Array);
 
@@ -111,22 +111,22 @@ describe('Test on teams API', () => {
 			});
 		});
 
-		it('Should return correct GD and Pts', async() =>{
-			const newTeamValues = { PG: 1, PE:1, GF:2, GC:1};
+		it('Should return correct GD and Pts', async () => {
+			const newTeamValues = { PG: 1, PE: 1, GF: 2, GC: 1 };
 			const teamToUpdate = response.body[0];
 			await request(app).put(`/api/teams/${teamToUpdate._id}`).send(newTeamValues);
 
 			const firstTeam = (await request(app).get('/api/teams').send()).body[0];
 			expect(firstTeam.GD).toBe(newTeamValues.GF - newTeamValues.GC);
 			expect(firstTeam.Pts).toBe(newTeamValues.PG * 3 + newTeamValues.PE);
-		})
+		});
 
 		it('Should return players info', async () => {
-			const allTeams = (response).body;
-			allTeams.forEach((team)=>{
+			const allTeams = response.body;
+			allTeams.forEach((team) => {
 				expect(team.players).toBe(undefined);
 				expect(team.playersDetails).toBeInstanceOf(Array);
-			})
+			});
 		});
 	});
 
