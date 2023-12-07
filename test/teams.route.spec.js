@@ -112,9 +112,13 @@ describe('Test on teams API', () => {
 		});
 
 		it('Should return correct GD and Pts', async() =>{
-			const firstTeam = response.body[0];
-			expect(firstTeam.GD).toBe(newTeam.GF - newTeam.GC);
-			expect(firstTeam.Pts).toBe(newTeam.PG * 3 + newTeam.PE);
+			const newTeamValues = { PG: 1, PE:1, GF:2, GC:1};
+			const teamToUpdate = response.body[0];
+			await request(app).put(`/api/teams/${teamToUpdate._id}`).send(newTeamValues);
+
+			const firstTeam = (await request(app).get('/api/teams').send()).body[0];
+			expect(firstTeam.GD).toBe(newTeamValues.GF - newTeamValues.GC);
+			expect(firstTeam.Pts).toBe(newTeamValues.PG * 3 + newTeamValues.PE);
 		})
 
 		it('Should return players info', async () => {
@@ -180,8 +184,8 @@ describe('Test on teams API', () => {
 		});
 
 		it('Route "PUT" works', async () => {
-			const update = { name: 'Team Updated' };
-			const response = await request(app).put(`/api/teams/${team._id}`).send(update);
+			const newTeamValues = { name: 'Team Updated' };
+			const response = await request(app).put(`/api/teams/${team._id}`).send(newTeamValues);
 
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
