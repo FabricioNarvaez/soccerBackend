@@ -35,7 +35,7 @@ describe('Test on teams API', () => {
 		await mongoose.disconnect();
 	});
 
-	describe('GET /api/teams', () => {
+	describe('Get Teams', () => {
 		let response;
 
 		beforeAll(async () => {
@@ -126,7 +126,7 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('POST /api/teams', () => {
+	describe('Create Team', () => {
 		afterEach(async () => {
 			await TeamModel.deleteMany({ name: newTeam.name });
 		});
@@ -168,7 +168,7 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('PUT /api/teams', () => {
+	describe('Update Team', () => {
 		let team;
 
 		beforeEach(async () => {
@@ -196,7 +196,7 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('DELETE /api/teams/:id', () => {
+	describe('Delete Team', () => {
 		it('Should deletes team', async () => {
 			const team = (await request(app).post('/api/teams').send(newTeam)).body;
 			const response = await request(app).delete(`/api/teams/${team._id}`);
