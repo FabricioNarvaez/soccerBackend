@@ -4,12 +4,19 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const TeamModel = require('../models/team.model');
 const CoachModel = require('../models/coach.model');
+const PlayerModel = require('../models/players.model');
 
 describe('Test on teams API', () => {
 	const coachTeam = {
 		userName: 'testCoach',
 		password: 'passwordCoach',
 		name: 'Test Coach',
+	};
+
+	const newPlayer = {
+		name: 'PlayerTest',
+		playerNumber: 0,
+		alias: 'Test',
 	};
 
 	const newTeam = {
@@ -28,16 +35,24 @@ describe('Test on teams API', () => {
 		await mongoose.disconnect();
 	});
 
-	describe('GET /api/teams', () => {
+	describe('Get Teams', () => {
 		let response;
 
-		beforeEach(async () => {
+		beforeAll(async () => {
+			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
+			newTeam.coach = teamCoachTest.body._id;
+
+			const createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			newTeam.players.push(createdPlayer.body._id);
+
+			await request(app).post('/api/teams').send(newTeam);
 			response = await request(app).get('/api/teams').send();
 		});
 
 		afterAll(async () => {
 			await CoachModel.deleteMany({ userName: coachTeam.userName });
 			await TeamModel.deleteMany({ name: newTeam.name });
+			await PlayerModel.deleteMany({ name: newPlayer.name });
 		});
 
 		it('Route "GET" works', async () => {
@@ -45,18 +60,10 @@ describe('Test on teams API', () => {
 			expect(response.headers['content-type']).toContain('json');
 		});
 
-		it('Request returns an array of teams', () => {
-			expect(response.body).toBeInstanceOf(Array);
-		});
+		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, Pts, shield, players, coachName, group]', async () => {
+			const allTeams = response.body;
 
-		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, shield, players, coachName, group]', async () => {
-			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
-			newTeam.coach = teamCoachTest.body._id;
-
-			await request(app).post('/api/teams').send(newTeam);
-			response = (await request(app).get('/api/teams').send()).body;
-
-			expect(response).toBeInstanceOf(Array);
+			expect(allTeams).toBeInstanceOf(Array);
 
 			const columns = [
 				'name',
@@ -66,13 +73,15 @@ describe('Test on teams API', () => {
 				'PE',
 				'GF',
 				'GC',
+				'GD',
+				'Pts',
 				'shield',
-				'players',
+				'playersDetails',
 				'coachName',
 				'group',
 			];
 
-			response.forEach((team) => {
+			allTeams.forEach((team) => {
 				columns.forEach((column) => {
 					expect(team[column]).toBeDefined();
 					switch (column) {
@@ -87,9 +96,11 @@ describe('Test on teams API', () => {
 						case 'PE':
 						case 'GF':
 						case 'GC':
+						case 'GD':
+						case 'Pts':
 							expect(typeof team[column]).toBe('number');
 							break;
-						case 'players':
+						case 'playersDetails':
 							expect(typeof team[column]).toBe('object');
 							break;
 
@@ -99,9 +110,27 @@ describe('Test on teams API', () => {
 				});
 			});
 		});
+
+		it('Should return correct GD and Pts', async () => {
+			const newTeamValues = { PG: 1, PE: 1, GF: 2, GC: 1 };
+			const teamToUpdate = response.body[0];
+			await request(app).put(`/api/teams/${teamToUpdate._id}`).send(newTeamValues);
+
+			const firstTeam = (await request(app).get('/api/teams').send()).body[0];
+			expect(firstTeam.GD).toBe(newTeamValues.GF - newTeamValues.GC);
+			expect(firstTeam.Pts).toBe(newTeamValues.PG * 3 + newTeamValues.PE);
+		});
+
+		it('Should return players info', async () => {
+			const allTeams = response.body;
+			allTeams.forEach((team) => {
+				expect(team.players).toBe(undefined);
+				expect(team.playersDetails).toBeInstanceOf(Array);
+			});
+		});
 	});
 
-	describe('POST /api/teams', () => {
+	describe('Create Team', () => {
 		afterEach(async () => {
 			await TeamModel.deleteMany({ name: newTeam.name });
 		});
@@ -143,7 +172,7 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('PUT /api/teams', () => {
+	describe('Update Team', () => {
 		let team;
 
 		beforeEach(async () => {
@@ -155,8 +184,8 @@ describe('Test on teams API', () => {
 		});
 
 		it('Route "PUT" works', async () => {
-			const update = { name: 'Team Updated' };
-			const response = await request(app).put(`/api/teams/${team._id}`).send(update);
+			const newTeamValues = { name: 'Team Updated' };
+			const response = await request(app).put(`/api/teams/${team._id}`).send(newTeamValues);
 
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
@@ -171,7 +200,7 @@ describe('Test on teams API', () => {
 		});
 	});
 
-	describe('DELETE /api/teams/:id', () => {
+	describe('Delete Team', () => {
 		it('Should deletes team', async () => {
 			const team = (await request(app).post('/api/teams').send(newTeam)).body;
 			const response = await request(app).delete(`/api/teams/${team._id}`);
