@@ -1,3 +1,4 @@
+const deleteController = require('./common.controllers');
 const MatchModel = require('../models/match.model');
 const mongoose = require('mongoose');
 
@@ -95,13 +96,7 @@ const getMatches = async (req, res) => {
 };
 
 const deleteMatch = async (req, res) => {
-	try {
-		const matchId = req.params.id;
-		const deletedMatch = await MatchModel.findByIdAndDelete(matchId);
-		res.json(deletedMatch);
-	} catch (error) {
-		res.status(500).json({ error: error });
-	}
+	deleteController(req, res, MatchModel);
 };
 
 const saveMatch = async (req, res) => {

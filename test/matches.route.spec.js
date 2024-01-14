@@ -91,6 +91,8 @@ describe('Test on matches API', () => {
 
 			const match = foundMatch.body.match;
 			expect(match._id).toBe(createdMatch.body._id);
+			expect(match.localTeamName).toBe(newLocalTeam.name);
+			expect(match.visitorTeamName).toBe(newVisitorTeam.name);
 		});
 	});
 
