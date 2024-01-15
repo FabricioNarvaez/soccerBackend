@@ -154,7 +154,7 @@ describe('Test on matches API', () => {
 		});
 	});
 
-	describe('PUT Player /api/players/:id', () => {
+	describe('PUT Match /api/matches/:id', () => {
 		beforeAll(async () => {
 			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
@@ -176,7 +176,8 @@ describe('Test on matches API', () => {
 			const response = await request(app).put(`/api/matches/${createdMatch.body._id}`).send(createdMatch.body);
 
 			expect(response.status).toBe(200);
-			expect(response.body.editedMatch._id).toBe(createdMatch.body._id);
+			expect(response.body.editObject._id).toBe(createdMatch.body._id);
+			expect(response.body.status).toBe('success');
 		});
 
 		it('Should return 500 status if match is not founded', async () => {

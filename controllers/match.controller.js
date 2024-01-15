@@ -1,4 +1,4 @@
-const deleteController = require('./common.controllers');
+const { updateController, deleteController } = require('./common.controllers');
 const MatchModel = require('../models/match.model');
 const mongoose = require('mongoose');
 
@@ -120,19 +120,7 @@ const saveMatch = async (req, res) => {
 };
 
 const updateMatch = async (req, res) => {
-	try {
-		const matchId = req.params.id;
-		const updatedMatch = req.body;
-		const editedMatch = await MatchModel.findByIdAndUpdate(matchId, updatedMatch, { new: true }).lean();
-		if (editedMatch) {
-			res.status(200).send({
-				status: 'success',
-				editedMatch,
-			});
-		}
-	} catch (error) {
-		res.status(500).json({ error: error });
-	}
+	updateController(req, res, MatchModel);
 };
 
 module.exports = { getMatch, getMatches, deleteMatch, saveMatch, updateMatch };
