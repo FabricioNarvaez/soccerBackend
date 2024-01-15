@@ -36,7 +36,7 @@ describe('Test on matches API', () => {
 		await mongoose.disconnect();
 	});
 
-	describe('POST /api/matches', () => {
+	describe('Create new Match', () => {
 		beforeEach(async () => {
 			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
@@ -68,7 +68,7 @@ describe('Test on matches API', () => {
 		});
 	});
 
-	describe('GET Match /api/matches/:id', () => {
+	describe('Get match by id', () => {
 		beforeAll(async () => {
 			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
@@ -96,7 +96,7 @@ describe('Test on matches API', () => {
 		});
 	});
 
-	describe('GET Matches /api/matches/all', () => {
+	describe('Get all matches', () => {
 		let response;
 
 		beforeAll(async () => {
@@ -154,7 +154,7 @@ describe('Test on matches API', () => {
 		});
 	});
 
-	describe('PUT Match /api/matches/:id', () => {
+	describe('Update match by id', () => {
 		beforeAll(async () => {
 			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
@@ -188,7 +188,7 @@ describe('Test on matches API', () => {
 		});
 	});
 
-	describe('DELETE /api/matches/:id', () => {
+	describe('Delete match by id', () => {
 		beforeAll(async () => {
 			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
