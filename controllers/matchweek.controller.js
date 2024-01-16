@@ -22,8 +22,8 @@ const createMatchweek = async (req, res) => {
 // 	updateController(req, res, MatchweekModel);
 // };
 
-// const deleteMatchweek = async (req, res) => {
-// 	deleteController(req, res, MatchweekModel);
-// };
+const deleteMatchweek = async (req, res) => {
+	deleteController(req, res, MatchweekModel);
+};
 
-module.exports = { createMatchweek };
+module.exports = { createMatchweek, deleteMatchweek };

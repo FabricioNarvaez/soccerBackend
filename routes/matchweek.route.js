@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const { createMatchweek  } = require('../controllers/matchweek.controller');
+const { createMatchweek, deleteMatchweek } = require('../controllers/matchweek.controller');
 
 router.post('/create', createMatchweek);
+router.delete('/:id', deleteMatchweek);
 // router.get('/', getMatchweek);
 // router.put('/:id', updateTeam);
-// router.delete('/:id', deleteTeam);
 
 module.exports = router;
