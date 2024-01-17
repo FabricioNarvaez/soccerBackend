@@ -6,9 +6,9 @@ const MatchweekModel = require('../models/matchweek.model');
 
 describe('Test on admins API', () => {
 	const newMatchweek = {
-        "matchweek": 1,
-        "date": "2023-01-15T00:00:00.000Z"
-      };
+		'matchweek': 1,
+		'date': '2023-01-15T00:00:00.000Z',
+	};
 
 	beforeAll(async () => {
 		await mongoose.connect(process.env.URL_MONGODB);
@@ -27,8 +27,8 @@ describe('Test on admins API', () => {
 			const response = await request(app).post('/api/matchweek/create').send(newMatchweek);
 
 			expect(response.status).toBe(200);
-            expect(response.body.matchweek).toBe(newMatchweek.matchweek);
-            expect(response.body.date).toBe(newMatchweek.date);
+			expect(response.body.matchweek).toBe(newMatchweek.matchweek);
+			expect(response.body.date).toBe(newMatchweek.date);
 		});
 
 		it('Should not add new matchweek', async () => {
@@ -42,8 +42,8 @@ describe('Test on admins API', () => {
 		});
 	});
 
-    describe('Delete matchweek', ()=>{
-        it('Should deletes matchweek', async () => {
+	describe('Delete matchweek', () => {
+		it('Should deletes matchweek', async () => {
 			const matchweek = (await request(app).post('/api/matchweek/create').send(newMatchweek)).body;
 			const response = await request(app).delete(`/api/matchweek/${matchweek._id}`);
 			expect(response.status).toBe(200);
@@ -58,5 +58,16 @@ describe('Test on admins API', () => {
 			const response = await request(app).delete(`/api/matchweek/${idFail}`);
 			expect(response.status).toBe(500);
 		});
-    })
+	});
+
+	describe('Update Matchweek', () => {
+		it('Should updates matchweek', async () => {
+			const matchweek = await MatchweekModel.create(newMatchweek);
+			const updateMatchweek = { 'matchweek': 2 };
+			const response = await request(app).put(`/api/matchweek/${matchweek._id}`).send(updateMatchweek);
+
+			expect(response.status).toBe(200);
+			expect(response.body.editObject.matchweek).toBe(updateMatchweek.matchweek);
+		});
+	});
 });
