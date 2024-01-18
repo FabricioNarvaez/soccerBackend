@@ -2,6 +2,8 @@ require('dotenv').config();
 const app = require('../app');
 const request = require('supertest');
 const mongoose = require('mongoose');
+const MatchModel = require('../models/match.model');
+const TeamModel = require('../models/team.model');
 const MatchweekModel = require('../models/matchweek.model');
 
 describe('Test on admins API', () => {
@@ -70,4 +72,54 @@ describe('Test on admins API', () => {
 			expect(response.body.editObject.matchweek).toBe(updateMatchweek.matchweek);
 		});
 	});
+
+	describe('Update Matchweek', () => {
+		let matchweek;
+
+		const newMatch = {
+			hour: new Date(),
+		};
+
+		const localTeam = {
+			name: 'Local Team',
+			acronym: 'TT',
+			shield: '',
+			players: [],
+			group: 'A',
+		};
+
+		const visitorTeam = {
+			name: 'Visitor Team',
+			acronym: 'TT',
+			shield: '',
+			players: [],
+			group: 'A',
+		};
+
+		beforeAll(async ()=>{
+			const localTeamTest = await request(app).post('/api/teams').send(localTeam);
+			const visitorTeamTest = await request(app).post('/api/teams').send(visitorTeam);
+			
+			newMatch.localId = localTeamTest.body._id;
+			newMatch.visitorId = visitorTeamTest.body._id;
+			const createdMatch = await request(app).post('/api/matches').send(newMatch);
+
+			let testMatchweek = newMatchweek;
+			testMatchweek.matches = [createdMatch.body._id]
+			matchweek = await request(app).post('/api/matchweek/create').send(newMatchweek);
+		})
+
+		afterAll(async () => {
+			await TeamModel.deleteMany({ name : localTeam.name});
+			await TeamModel.deleteMany({ name : visitorTeam.name});
+			await MatchModel.deleteMany({ hour : newMatch.hour});
+			await MatchweekModel.deleteMany({ matchweek : newMatchweek.matchweek});
+		});
+
+		it.only('Get match by id', async ()=>{
+			const foundMatch = await request(app).get(`/api/matchweek/${matchweek.body._id}`).send();
+			
+			console.log();
+		})
+	})
 });
