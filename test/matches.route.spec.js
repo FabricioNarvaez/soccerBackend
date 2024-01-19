@@ -52,14 +52,14 @@ describe('Test on matches API', () => {
 		});
 
 		it('Route "POST" works', async () => {
-			createdMatch = await request(app).post('/api/matches').send(newMatch);
+			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 
 			expect(createdMatch.status).toBe(200);
 			expect(createdMatch.headers['content-type']).toContain('json');
 		});
 
 		it('Should create a new match', async () => {
-			createdMatch = await request(app).post('/api/matches').send(newMatch);
+			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 
 			expect(createdMatch.status).toBe(200);
 			expect(createdMatch.body._id).toBeDefined();
@@ -76,7 +76,7 @@ describe('Test on matches API', () => {
 			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 
-			createdMatch = await request(app).post('/api/matches').send(newMatch);
+			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 		});
 
 		afterAll(async () => {
@@ -106,7 +106,7 @@ describe('Test on matches API', () => {
 			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 
-			createdMatch = await request(app).post('/api/matches').send(newMatch);
+			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 			response = await request(app).get('/api/matches/all').send();
 		});
 
@@ -162,7 +162,7 @@ describe('Test on matches API', () => {
 			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 
-			createdMatch = await request(app).post('/api/matches').send(newMatch);
+			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 		});
 
 		afterAll(async () => {
@@ -203,7 +203,7 @@ describe('Test on matches API', () => {
 		});
 
 		it('Should deletes match', async () => {
-			const match = (await request(app).post('/api/matches').send(newMatch)).body;
+			const match = (await request(app).post('/api/matches/create').send(newMatch)).body;
 			const response = await request(app).delete(`/api/matches/${match._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
