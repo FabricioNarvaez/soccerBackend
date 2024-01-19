@@ -12,6 +12,22 @@ describe('Test on admins API', () => {
 		'date': '2023-01-15T00:00:00.000Z',
 	};
 
+	const localTeam = {
+		name: 'Local Team',
+		acronym: 'TT',
+		shield: '',
+		players: [],
+		group: 'A',
+	};
+
+	const visitorTeam = {
+		name: 'Visitor Team',
+		acronym: 'TT',
+		shield: '',
+		players: [],
+		group: 'A',
+	};
+
 	beforeAll(async () => {
 		await mongoose.connect(process.env.URL_MONGODB);
 	});
@@ -73,54 +89,75 @@ describe('Test on admins API', () => {
 		});
 	});
 
-	describe('Update Matchweek', () => {
+	describe('Get Matchweek by id', () => {
 		let matchweek;
 
 		const newMatch = {
 			hour: new Date(),
 		};
 
-		const localTeam = {
-			name: 'Local Team',
-			acronym: 'TT',
-			shield: '',
-			players: [],
-			group: 'A',
-		};
-
-		const visitorTeam = {
-			name: 'Visitor Team',
-			acronym: 'TT',
-			shield: '',
-			players: [],
-			group: 'A',
-		};
-
-		beforeAll(async ()=>{
+		beforeAll(async () => {
 			const localTeamTest = await request(app).post('/api/teams').send(localTeam);
 			const visitorTeamTest = await request(app).post('/api/teams').send(visitorTeam);
-			
+
 			newMatch.localId = localTeamTest.body._id;
 			newMatch.visitorId = visitorTeamTest.body._id;
 			const createdMatch = await request(app).post('/api/matches').send(newMatch);
 
 			let testMatchweek = newMatchweek;
-			testMatchweek.matches = [createdMatch.body._id]
-			matchweek = await request(app).post('/api/matchweek/create').send(newMatchweek);
-		})
-
-		afterAll(async () => {
-			await TeamModel.deleteMany({ name : localTeam.name});
-			await TeamModel.deleteMany({ name : visitorTeam.name});
-			await MatchModel.deleteMany({ hour : newMatch.hour});
-			await MatchweekModel.deleteMany({ matchweek : newMatchweek.matchweek});
+			testMatchweek.matches = [createdMatch.body._id];
+			matchweek = await request(app).post('/api/matchweek/create').send(testMatchweek);
 		});
 
-		it('Get match by id', async ()=>{
-			const foundMatch = (await request(app).get(`/api/matchweek/${matchweek.body._id}`).send()).body;
-			expect(foundMatch._id).toBe(matchweek.body._id);
-			expect(foundMatch.matches[0].localId.name).toBe(localTeam.name);
-			expect(foundMatch.matches[0].visitorId.name).toBe(visitorTeam.name);
-		})
-	})
+		afterAll(async () => {
+			await TeamModel.deleteMany({ name: localTeam.name });
+			await TeamModel.deleteMany({ name: visitorTeam.name });
+			await MatchModel.deleteMany({ hour: newMatch.hour });
+			await MatchweekModel.deleteMany({ matchweek: newMatchweek.matchweek });
+		});
+
+		it('Get match by id', async () => {
+			const foundMatchweek = (await request(app).get(`/api/matchweek/${matchweek.body._id}`).send()).body;
+			expect(foundMatchweek._id).toBe(matchweek.body._id);
+			expect(foundMatchweek.matches[0].localId.name).toBe(localTeam.name);
+			expect(foundMatchweek.matches[0].visitorId.name).toBe(visitorTeam.name);
+		});
+	});
+
+	describe('Get all Matchweeks ordered by "matchweek" key', () => {
+		let firstMatchweek;
+
+		const newMatch = {
+			hour: new Date(),
+		};
+
+		beforeAll(async () => {
+			const localTeamTest = await request(app).post('/api/teams').send(localTeam);
+			const visitorTeamTest = await request(app).post('/api/teams').send(visitorTeam);
+
+			newMatch.localId = localTeamTest.body._id;
+			newMatch.visitorId = visitorTeamTest.body._id;
+			const createdMatch = await request(app).post('/api/matches').send(newMatch);
+
+			let testMatchweek = newMatchweek;
+			testMatchweek.matches = [createdMatch.body._id];
+			firstMatchweek = await request(app).post('/api/matchweek/create').send(newMatchweek);
+			testMatchweek.matchweek = 2;
+			firstMatchweek = await request(app).post('/api/matchweek/create').send(testMatchweek);
+		});
+
+		afterAll(async () => {
+			await TeamModel.deleteMany({ name: localTeam.name });
+			await TeamModel.deleteMany({ name: visitorTeam.name });
+			await MatchModel.deleteMany({ hour: newMatch.hour });
+			await MatchweekModel.deleteMany({ matchweek: 1 });
+			await MatchweekModel.deleteMany({ matchweek: newMatchweek.matchweek });
+		});
+
+		it('Get all Matchweeks ordered by "matchweek" key', async () => {
+			const allMatchweeks = (await request(app).get(`/api/matchweek/all`).send()).body;
+			expect(allMatchweeks[0].matchweek).toBe(1);
+			expect(allMatchweeks[1].matchweek).toBe(2);
+		});
+	});
 });
