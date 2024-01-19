@@ -110,21 +110,22 @@ describe('Test on matches API', () => {
 		});
 
 
-		it('Each match in the response should have all columns[finished, hour, localGoals, localId, visitorGoals, visitorId]', async () => {
+		// TODO: Falla este test
+		it('Each match in the response should have all columns[finished, hour, localGoals, localTeamName, visitorGoals, visitorTeamName]', async () => {
 			const allMatches = response.body;
 
 			expect(response.status).toBe(200);
 			expect(allMatches).toBeInstanceOf(Array);
 
-			const columns = ['finished', 'hour', 'localGoals', 'localId', 'visitorGoals', 'visitorId'];
+			const columns = ['finished', 'hour', 'localGoals', 'localTeamName', 'visitorGoals', 'visitorTeamName'];
 
 			allMatches.forEach((match) => {
 				columns.forEach((column) => {
 					expect(match[column]).toBeDefined();
 					switch (column) {
-						case 'localId':
-						case 'visitorId':
-							expect(typeof match[column].name).toBe('string');
+						case 'localTeamName':
+						case 'visitorTeamName':
+							expect(typeof match[column]).toBe('string');
 							break;
 						case 'hour':
 							expect(new Date(match[column]) instanceof Date).toBe(true);
