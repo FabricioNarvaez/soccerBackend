@@ -42,7 +42,7 @@ describe('Test on teams API', () => {
 			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
 			newTeam.coach = teamCoachTest.body._id;
 
-			const createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			const createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 			newTeam.players.push(createdPlayer.body._id);
 
 			await request(app).post('/api/teams').send(newTeam);

@@ -27,14 +27,14 @@ describe('Test on players API', () => {
 		});
 
 		it('Route "POST" works', async () => {
-			createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 
 			expect(createdPlayer.status).toBe(200);
 			expect(createdPlayer.headers['content-type']).toContain('json');
 		});
 
 		it('Should create a new player', async () => {
-			createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 
 			expect(createdPlayer.status).toBe(200);
 			expect(createdPlayer.body._id).toBeDefined();
@@ -44,7 +44,7 @@ describe('Test on players API', () => {
 
 	describe('GET Player /api/players/:id', () => {
 		beforeAll(async () => {
-			createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 		});
 
 		afterAll(async () => {
@@ -62,7 +62,7 @@ describe('Test on players API', () => {
 
 	describe('GET Players /api/players/all', () => {
 		beforeAll(async () => {
-			createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 		});
 
 		afterAll(async () => {
@@ -70,7 +70,7 @@ describe('Test on players API', () => {
 		});
 
 		it('Should ret return all players ordered by goals', async () => {
-			const secondPlayer = (await request(app).post('/api/players').send(newPlayer)).body;
+			const secondPlayer = (await request(app).post('/api/players/create').send(newPlayer)).body;
 			const updateSecondPlayers = { goals: 2 };
 			await request(app).put(`/api/players/${secondPlayer._id}`).send(updateSecondPlayers);
 
@@ -94,7 +94,7 @@ describe('Test on players API', () => {
 		const updatePlayer = { name: 'Player Updated' };
 
 		beforeAll(async () => {
-			createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 		});
 
 		afterAll(async () => {
@@ -118,7 +118,7 @@ describe('Test on players API', () => {
 
 	describe('DELETE /api/players/:id', () => {
 		it('Should deletes team', async () => {
-			const player = (await request(app).post('/api/players').send(newPlayer)).body;
+			const player = (await request(app).post('/api/players/create').send(newPlayer)).body;
 			const response = await request(app).delete(`/api/players/${player._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');
