@@ -109,8 +109,6 @@ describe('Test on matches API', () => {
 			await MatchModel.findByIdAndDelete(createdMatch.body._id);
 		});
 
-
-		// TODO: Falla este test
 		it('Each match in the response should have all columns[finished, hour, localGoals, localTeamName, visitorGoals, visitorTeamName]', async () => {
 			const allMatches = response.body;
 
