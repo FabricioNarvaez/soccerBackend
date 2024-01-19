@@ -116,10 +116,11 @@ describe('Test on admins API', () => {
 			await MatchweekModel.deleteMany({ matchweek : newMatchweek.matchweek});
 		});
 
-		it.only('Get match by id', async ()=>{
-			const foundMatch = await request(app).get(`/api/matchweek/${matchweek.body._id}`).send();
-			
-			console.log();
+		it('Get match by id', async ()=>{
+			const foundMatch = (await request(app).get(`/api/matchweek/${matchweek.body._id}`).send()).body;
+			expect(foundMatch._id).toBe(matchweek.body._id);
+			expect(foundMatch.matches[0].localId.name).toBe(localTeam.name);
+			expect(foundMatch.matches[0].visitorId.name).toBe(visitorTeam.name);
 		})
 	})
 });

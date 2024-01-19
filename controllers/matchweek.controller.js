@@ -1,7 +1,8 @@
 'use strict';
 
-const MatchweekModel = require('../models/matchweek.model');
+const TeamModel = require('../models/team.model');
 const MatchModel = require('../models/match.model');
+const MatchweekModel = require('../models/matchweek.model');
 const { updateController, deleteController } = require('./common.controllers');
 
 const createMatchweek = async (req, res) => {
@@ -31,16 +32,20 @@ const getMatchweek = async (req, res) => {
     try {
         const matchWeekId = req.params.id;
 
-        const data = await MatchweekModel.findById(matchWeekId)
+        const matchWeekFounded = await MatchweekModel.findById(matchWeekId)
             .populate({
                 path: 'matches',
                 model: MatchModel,
-
+				populate: {
+					path: 'localId visitorId',
+					model: TeamModel,
+					select: 'name'
+				}
             }).exec();
 
-        res.status(200).send(data);
+        res.status(200).send(matchWeekFounded);
     } catch (error) {
-		res.status(500).json({ error: error.message });
+		res.status(500).send(error);
 	}
 };
 
