@@ -38,10 +38,10 @@ describe('Test on matches API', () => {
 
 	describe('Create new Match', () => {
 		beforeEach(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
 
-			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 		});
 
@@ -70,10 +70,10 @@ describe('Test on matches API', () => {
 
 	describe('Get match by id', () => {
 		beforeAll(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
 
-			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 
 			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
@@ -100,10 +100,10 @@ describe('Test on matches API', () => {
 		let response;
 
 		beforeAll(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
 
-			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 
 			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
@@ -156,10 +156,10 @@ describe('Test on matches API', () => {
 
 	describe('Update match by id', () => {
 		beforeAll(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
 
-			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 
 			createdMatch = await request(app).post('/api/matches/create').send(newMatch);
@@ -190,10 +190,10 @@ describe('Test on matches API', () => {
 
 	describe('Delete match by id', () => {
 		beforeAll(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(newLocalTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(newLocalTeam);
 			newMatch.localId = localTeamTest.body._id;
 
-			const visitorTeamTest = await request(app).post('/api/teams').send(newVisitorTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(newVisitorTeam);
 			newMatch.visitorId = visitorTeamTest.body._id;
 		});
 
