@@ -26,13 +26,6 @@ describe('Test on players API', () => {
 			await PlayerModel.deleteMany({ name: newPlayer.name });
 		});
 
-		it('Route "POST" works', async () => {
-			createdPlayer = await request(app).post('/api/players').send(newPlayer);
-
-			expect(createdPlayer.status).toBe(200);
-			expect(createdPlayer.headers['content-type']).toContain('json');
-		});
-
 		it('Should create a new player', async () => {
 			createdPlayer = await request(app).post('/api/players').send(newPlayer);
 

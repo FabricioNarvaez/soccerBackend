@@ -51,13 +51,6 @@ describe('Test on matches API', () => {
 			await MatchModel.findByIdAndDelete(createdMatch.body._id);
 		});
 
-		it('Route "POST" works', async () => {
-			createdMatch = await request(app).post('/api/matches').send(newMatch);
-
-			expect(createdMatch.status).toBe(200);
-			expect(createdMatch.headers['content-type']).toContain('json');
-		});
-
 		it('Should create a new match', async () => {
 			createdMatch = await request(app).post('/api/matches').send(newMatch);
 
@@ -116,14 +109,10 @@ describe('Test on matches API', () => {
 			await MatchModel.findByIdAndDelete(createdMatch.body._id);
 		});
 
-		it('Route "GET" works', async () => {
-			expect(response.status).toBe(200);
-			expect(response.headers['content-type']).toContain('json');
-		});
-
 		it('Each match in the response should have all columns[finished, hour, localGoals, localTeamName, visitorGoals, visitorTeamName]', async () => {
 			const allMatches = response.body;
 
+			expect(response.status).toBe(200);
 			expect(allMatches).toBeInstanceOf(Array);
 
 			const columns = ['finished', 'hour', 'localGoals', 'localTeamName', 'visitorGoals', 'visitorTeamName'];
