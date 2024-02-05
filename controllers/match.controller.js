@@ -1,5 +1,6 @@
 const { updateController, deleteController } = require('./common.controllers');
 const MatchModel = require('../models/match.model');
+const TeamModel = require('../models/team.model');
 const mongoose = require('mongoose');
 
 const getMatch = async (req, res) => {
@@ -57,39 +58,15 @@ const getMatch = async (req, res) => {
 
 const getMatches = async (req, res) => {
 	try {
-		const foundMatches = await MatchModel.aggregate([
-			{
-				$lookup: {
-					from: 'teams',
-					localField: 'localId',
-					foreignField: '_id',
-					as: 'localTeam',
-				},
-			},
-			{
-				$lookup: {
-					from: 'teams',
-					localField: 'visitorId',
-					foreignField: '_id',
-					as: 'visitorTeam',
-				},
-			},
-			{
-				$addFields: {
-					'localTeamName': { $arrayElemAt: ['$localTeam.name', 0] },
-					'visitorTeamName': { $arrayElemAt: ['$visitorTeam.name', 0] },
-				},
-			},
-			{
-				$project: {
-					'localTeam': 0,
-					'visitorTeam': 0,
-					'localId': 0,
-					'visitorId': 0,
-				},
-			},
-		]);
-		res.json(foundMatches);
+		const matches = await MatchModel.find({})
+			.populate({
+				path: 'localId visitorId',
+				model: TeamModel,
+				select: 'name'
+			})
+			.exec();
+
+		res.json(matches);
 	} catch (error) {
 		res.status(500).json({ error: error });
 	}

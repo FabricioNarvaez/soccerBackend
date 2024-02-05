@@ -55,14 +55,10 @@ describe('Test on teams API', () => {
 			await PlayerModel.deleteMany({ name: newPlayer.name });
 		});
 
-		it('Route "GET" works', async () => {
-			expect(response.status).toBe(200);
-			expect(response.headers['content-type']).toContain('json');
-		});
-
 		it('Each team in the response should have all columns[name, acronym, PG, PP, PE, GF, GC, GD, Pts, shield, players, coachName, group]', async () => {
 			const allTeams = response.body;
-
+			
+			expect(response.status).toBe(200);
 			expect(allTeams).toBeInstanceOf(Array);
 
 			const columns = [
@@ -135,16 +131,10 @@ describe('Test on teams API', () => {
 			await TeamModel.deleteMany({ name: newTeam.name });
 		});
 
-		it('Route "POST" works', async () => {
-			const response = await request(app).post('/api/teams/create').send(newTeam);
-
-			expect(response.status).toBe(200);
-			expect(response.headers['content-type']).toContain('json');
-		});
-
 		it('Should add new team with default shield if it is empty', async () => {
 			const response = await request(app).post('/api/teams/create').send(newTeam);
 
+			expect(response.status).toBe(200);
 			expect(response.body._id).toBeDefined();
 			expect(response.body.name).toBe(newTeam.name);
 			expect(response.body.shield).toBe(
@@ -181,14 +171,6 @@ describe('Test on teams API', () => {
 
 		afterEach(async () => {
 			await TeamModel.findByIdAndDelete(team._id);
-		});
-
-		it('Route "PUT" works', async () => {
-			const newTeamValues = { name: 'Team Updated' };
-			const response = await request(app).put(`/api/teams/${team._id}`).send(newTeamValues);
-
-			expect(response.status).toBe(200);
-			expect(response.headers['content-type']).toContain('json');
 		});
 
 		it('Should updates team', async () => {

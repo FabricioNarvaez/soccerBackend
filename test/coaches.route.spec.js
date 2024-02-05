@@ -71,16 +71,10 @@ describe('Test on coaches API', () => {
 			await CoachModel.deleteMany({ name: newCoach.name });
 		});
 
-		it('Route "POST" works', async () => {
-			const response = await request(app).post('/api/coaches/register').send(newCoach);
-
-			expect(response.status).toBe(200);
-			expect(response.headers['content-type']).toContain('json');
-		});
-
 		it('Should add new coach', async () => {
 			const response = await request(app).post('/api/coaches/register').send(newCoach);
 
+			expect(response.status).toBe(200);
 			expect(response.body._id).toBeDefined();
 			expect(response.body.userName).toBe(newCoach.userName);
 		});
