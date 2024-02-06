@@ -42,7 +42,7 @@ describe('Test on coaches API', () => {
 
 		it('Should return coach team info', async () => {
 			newTeam.coach = coach._id;
-			await request(app).post('/api/teams').send(newTeam);
+			await request(app).post('/api/teams/create').send(newTeam);
 			const teamInfo = await request(app).get(`/api/coaches/team/${coach._id}`).send();
 
 			const columns = [

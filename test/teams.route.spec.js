@@ -42,11 +42,11 @@ describe('Test on teams API', () => {
 			const teamCoachTest = await request(app).post('/api/coaches/register').send(coachTeam);
 			newTeam.coach = teamCoachTest.body._id;
 
-			const createdPlayer = await request(app).post('/api/players').send(newPlayer);
+			const createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 			newTeam.players.push(createdPlayer.body._id);
 
-			await request(app).post('/api/teams').send(newTeam);
-			response = await request(app).get('/api/teams').send();
+			await request(app).post('/api/teams/create').send(newTeam);
+			response = await request(app).get('/api/teams/all').send();
 		});
 
 		afterAll(async () => {
@@ -112,7 +112,7 @@ describe('Test on teams API', () => {
 			const teamToUpdate = response.body[0];
 			await request(app).put(`/api/teams/${teamToUpdate._id}`).send(newTeamValues);
 
-			const firstTeam = (await request(app).get('/api/teams').send()).body[0];
+			const firstTeam = (await request(app).get('/api/teams/all').send()).body[0];
 			expect(firstTeam.GD).toBe(newTeamValues.GF - newTeamValues.GC);
 			expect(firstTeam.Pts).toBe(newTeamValues.PG * 3 + newTeamValues.PE);
 		});
@@ -132,7 +132,7 @@ describe('Test on teams API', () => {
 		});
 
 		it('Should add new team with default shield if it is empty', async () => {
-			const response = await request(app).post('/api/teams').send(newTeam);
+			const response = await request(app).post('/api/teams/create').send(newTeam);
 
 			expect(response.status).toBe(200);
 			expect(response.body._id).toBeDefined();
@@ -144,7 +144,7 @@ describe('Test on teams API', () => {
 
 		it('Should add new team with custom shield', async () => {
 			newTeam.shield = 'https://customShield.com/sample.png';
-			const response = await request(app).post('/api/teams').send(newTeam);
+			const response = await request(app).post('/api/teams/create').send(newTeam);
 
 			expect(response.body._id).toBeDefined();
 			expect(response.body.name).toBe(newTeam.name);
@@ -154,7 +154,7 @@ describe('Test on teams API', () => {
 		it('Should not add new team', async () => {
 			const errorMock = new Error('Error creating team');
 			jest.spyOn(TeamModel, 'create').mockRejectedValue(errorMock);
-			const response = await request(app).post('/api/teams').send({});
+			const response = await request(app).post('/api/teams/create').send({});
 
 			expect(response.status).toBe(500);
 			expect(response.body.error).toBeDefined();
@@ -184,7 +184,7 @@ describe('Test on teams API', () => {
 
 	describe('Delete Team', () => {
 		it('Should deletes team', async () => {
-			const team = (await request(app).post('/api/teams').send(newTeam)).body;
+			const team = (await request(app).post('/api/teams/create').send(newTeam)).body;
 			const response = await request(app).delete(`/api/teams/${team._id}`);
 			expect(response.status).toBe(200);
 			expect(response.headers['content-type']).toContain('json');

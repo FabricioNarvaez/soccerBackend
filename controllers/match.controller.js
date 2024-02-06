@@ -76,7 +76,7 @@ const deleteMatch = async (req, res) => {
 	deleteController(req, res, MatchModel);
 };
 
-const saveMatch = async (req, res) => {
+const createMatch = async (req, res) => {
 	try {
 		const { hour, localId, visitorId } = req.body;
 
@@ -100,4 +100,4 @@ const updateMatch = async (req, res) => {
 	updateController(req, res, MatchModel);
 };
 
-module.exports = { getMatch, getMatches, deleteMatch, saveMatch, updateMatch };
+module.exports = { getMatch, getMatches, deleteMatch, createMatch, updateMatch };
