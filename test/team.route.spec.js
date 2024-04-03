@@ -27,7 +27,7 @@ describe('Test on teams API', () => {
 		group: 'A',
 	};
 
-	describe('Get Teams', () => {
+	describe('Get all Teams', () => {
 		let response;
 
 		beforeAll(async () => {
@@ -51,7 +51,7 @@ describe('Test on teams API', () => {
 			const allTeams = response.body;
 			
 			expect(response.status).toBe(200);
-			expect(allTeams).toBeInstanceOf(Array);
+			expect(allTeams).toBeInstanceOf(Object);
 
 			const columns = [
 				'name',
@@ -69,7 +69,7 @@ describe('Test on teams API', () => {
 				'group',
 			];
 
-			allTeams.forEach((team) => {
+			allTeams.A.forEach((team) => {
 				columns.forEach((column) => {
 					expect(team[column]).toBeDefined();
 					switch (column) {
@@ -101,17 +101,17 @@ describe('Test on teams API', () => {
 
 		it('Should return correct GD and Pts', async () => {
 			const newTeamValues = { PG: 1, PE: 1, GF: 2, GC: 1 };
-			const teamToUpdate = response.body[0];
-			await request(app).put(`/api/teams/${teamToUpdate._id}`).send(newTeamValues);
+			const teamToUpdate = response.body.A;
+			await request(app).put(`/api/teams/${teamToUpdate[0]._id}`).send(newTeamValues);
 
-			const firstTeam = (await request(app).get('/api/teams/all').send()).body[0];
+			const firstTeam = (await request(app).get('/api/teams/all').send()).body.A[0];
 			expect(firstTeam.GD).toBe(newTeamValues.GF - newTeamValues.GC);
 			expect(firstTeam.Pts).toBe(newTeamValues.PG * 3 + newTeamValues.PE);
 		});
 
 		it('Should return players info', async () => {
 			const allTeams = response.body;
-			allTeams.forEach((team) => {
+			allTeams.A.forEach((team) => {
 				expect(team.players).toBe(undefined);
 				expect(team.playersDetails).toBeInstanceOf(Array);
 			});

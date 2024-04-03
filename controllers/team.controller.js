@@ -34,7 +34,15 @@ const getTeams = async (req, res) => {
 			},
 			{ $project: { 'coachTeam': 0, 'playersInfo': 0, 'players': 0 } },
 		]);
-		res.json(teams);
+		const teamsOnGroups = {
+			A: [],
+			B: []
+		};
+		teams.forEach(team =>{
+			if(team.group === 'A') teamsOnGroups.A.push(team);
+			else teamsOnGroups.B.push(team);
+		})
+		res.json(teamsOnGroups);
 	} catch (error) {
 		res.status(500).json({ error: error });
 	}
