@@ -1,7 +1,7 @@
 require('dotenv').config();
+require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const MatchModel = require('../models/match.model');
 const TeamModel = require('../models/team.model');
 const MatchweekModel = require('../models/matchweek.model');
@@ -27,14 +27,6 @@ describe('Test on admins API', () => {
 		players: [],
 		group: 'A',
 	};
-
-	beforeAll(async () => {
-		await mongoose.connect(process.env.URL_MONGODB);
-	});
-
-	afterAll(async () => {
-		await mongoose.disconnect();
-	});
 
 	describe('Create new matchweek', () => {
 		afterAll(async () => {
@@ -97,12 +89,12 @@ describe('Test on admins API', () => {
 		};
 
 		beforeAll(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(localTeam);
-			const visitorTeamTest = await request(app).post('/api/teams').send(visitorTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(localTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(visitorTeam);
 
 			newMatch.localId = localTeamTest.body._id;
 			newMatch.visitorId = visitorTeamTest.body._id;
-			const createdMatch = await request(app).post('/api/matches').send(newMatch);
+			const createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 
 			let testMatchweek = newMatchweek;
 			testMatchweek.matches = [createdMatch.body._id];

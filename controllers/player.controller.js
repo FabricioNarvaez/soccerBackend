@@ -1,4 +1,4 @@
-const PlayerModel = require('../models/players.model');
+const PlayerModel = require('../models/player.model');
 const { updateController, deleteController } = require('./common.controllers');
 
 const createPlayer = async (req, res) => {

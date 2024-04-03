@@ -1,10 +1,10 @@
 require('dotenv').config();
+require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const TeamModel = require('../models/team.model');
 const CoachModel = require('../models/coach.model');
-const PlayerModel = require('../models/players.model');
+const PlayerModel = require('../models/player.model');
 
 describe('Test on teams API', () => {
 	const coachTeam = {
@@ -26,14 +26,6 @@ describe('Test on teams API', () => {
 		players: [],
 		group: 'A',
 	};
-
-	beforeAll(async () => {
-		await mongoose.connect(process.env.URL_MONGODB);
-	});
-
-	afterAll(async () => {
-		await mongoose.disconnect();
-	});
 
 	describe('Get Teams', () => {
 		let response;

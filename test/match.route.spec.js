@@ -1,7 +1,7 @@
 require('dotenv').config();
+require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const MatchModel = require('../models/match.model');
 const TeamModel = require('../models/team.model');
 
@@ -27,14 +27,6 @@ describe('Test on matches API', () => {
 	const newMatch = {
 		hour: new Date(),
 	};
-
-	beforeAll(async () => {
-		await mongoose.connect(process.env.URL_MONGODB);
-	});
-
-	afterAll(async () => {
-		await mongoose.disconnect();
-	});
 
 	describe('Create new Match', () => {
 		beforeEach(async () => {
@@ -110,7 +102,7 @@ describe('Test on matches API', () => {
 		});
 
 		it('Each match in the response should have all columns[finished, hour, localGoals, localId, visitorGoals, visitorId]', async () => {
-			const allMatches = response.body;
+			const allMatches = await response.body;
 
 			expect(response.status).toBe(200);
 			expect(allMatches).toBeInstanceOf(Array);
