@@ -97,12 +97,12 @@ describe('Test on admins API', () => {
 		};
 
 		beforeAll(async () => {
-			const localTeamTest = await request(app).post('/api/teams').send(localTeam);
-			const visitorTeamTest = await request(app).post('/api/teams').send(visitorTeam);
+			const localTeamTest = await request(app).post('/api/teams/create').send(localTeam);
+			const visitorTeamTest = await request(app).post('/api/teams/create').send(visitorTeam);
 
 			newMatch.localId = localTeamTest.body._id;
 			newMatch.visitorId = visitorTeamTest.body._id;
-			const createdMatch = await request(app).post('/api/matches').send(newMatch);
+			const createdMatch = await request(app).post('/api/matches/create').send(newMatch);
 
 			let testMatchweek = newMatchweek;
 			testMatchweek.matches = [createdMatch.body._id];
