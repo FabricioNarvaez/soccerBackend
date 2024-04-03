@@ -11,7 +11,7 @@ describe('Test on admins API', () => {
 		name: 'Test Admin',
 	};
 
-	describe('POST /api/admins/register', () => {
+	describe('Check create new admin', () => {
 		afterAll(async () => {
 			await AdminModel.deleteMany({ userName: 'testAdmin' });
 		});
@@ -25,7 +25,7 @@ describe('Test on admins API', () => {
 		});
 	});
 
-	describe('POST /api/admins/login', () => {
+	describe('Check Login admin', () => {
 		let admin;
 
 		beforeAll(async () => {
@@ -71,7 +71,7 @@ describe('Test on admins API', () => {
 		});
 	});
 
-	describe('DELETE /api/admins/:id', () => {
+	describe('Check delete admin', () => {
 		it('Should deletes admin', async () => {
 			const admin = (await request(app).post('/api/admins/register').send(newAdmin)).body;
 			const response = await request(app).delete(`/api/admins/${admin._id}`);
