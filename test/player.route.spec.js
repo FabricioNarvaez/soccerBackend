@@ -13,7 +13,7 @@ describe('Test on players API', () => {
 		alias: 'Test',
 	};
 
-	describe('POST /api/players', () => {
+	describe('Check create player', () => {
 		afterAll(async () => {
 			await PlayerModel.deleteMany({ name: newPlayer.name });
 		});
@@ -27,7 +27,7 @@ describe('Test on players API', () => {
 		});
 	});
 
-	describe('GET Player /api/players/:id', () => {
+	describe('Check receive players by id', () => {
 		beforeAll(async () => {
 			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 		});
@@ -45,7 +45,7 @@ describe('Test on players API', () => {
 		});
 	});
 
-	describe('GET Players /api/players/all', () => {
+	describe('Check receive all players', () => {
 		beforeAll(async () => {
 			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
 		});
@@ -75,7 +75,7 @@ describe('Test on players API', () => {
 		});
 	});
 
-	describe('PUT Player /api/players/:id', () => {
+	describe('check update player data', () => {
 		const updatePlayer = { name: 'Player Updated' };
 
 		beforeAll(async () => {
@@ -101,7 +101,7 @@ describe('Test on players API', () => {
 		});
 	});
 
-	describe('DELETE /api/players/:id', () => {
+	describe('Check delete player by id', () => {
 		it('Should deletes team', async () => {
 			const player = (await request(app).post('/api/players/create').send(newPlayer)).body;
 			const response = await request(app).delete(`/api/players/${player._id}`);
