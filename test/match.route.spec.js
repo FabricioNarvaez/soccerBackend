@@ -110,7 +110,7 @@ describe('Test on matches API', () => {
 		});
 
 		it('Each match in the response should have all columns[finished, hour, localGoals, localId, visitorGoals, visitorId]', async () => {
-			const allMatches = response.body;
+			const allMatches = await response.body;
 
 			expect(response.status).toBe(200);
 			expect(allMatches).toBeInstanceOf(Array);
