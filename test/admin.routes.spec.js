@@ -1,7 +1,7 @@
 require('dotenv').config();
+require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const AdminModel = require('../models/admin.model');
 
 describe('Test on admins API', () => {
@@ -10,14 +10,6 @@ describe('Test on admins API', () => {
 		password: 'password',
 		name: 'Test Admin',
 	};
-
-	beforeAll(async () => {
-		await mongoose.connect(process.env.URL_MONGODB);
-	});
-
-	afterAll(async () => {
-		await mongoose.disconnect();
-	});
 
 	describe('POST /api/admins/register', () => {
 		afterAll(async () => {

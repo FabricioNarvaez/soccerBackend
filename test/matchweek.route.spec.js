@@ -1,7 +1,7 @@
 require('dotenv').config();
+require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const MatchModel = require('../models/match.model');
 const TeamModel = require('../models/team.model');
 const MatchweekModel = require('../models/matchweek.model');
@@ -27,14 +27,6 @@ describe('Test on admins API', () => {
 		players: [],
 		group: 'A',
 	};
-
-	beforeAll(async () => {
-		await mongoose.connect(process.env.URL_MONGODB);
-	});
-
-	afterAll(async () => {
-		await mongoose.disconnect();
-	});
 
 	describe('Create new matchweek', () => {
 		afterAll(async () => {

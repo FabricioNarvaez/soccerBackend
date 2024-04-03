@@ -1,7 +1,7 @@
 require('dotenv').config();
+require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const PlayerModel = require('../models/player.model');
 
 describe('Test on players API', () => {
@@ -12,14 +12,6 @@ describe('Test on players API', () => {
 		playerNumber: 0,
 		alias: 'Test',
 	};
-
-	beforeAll(async () => {
-		await mongoose.connect(process.env.URL_MONGODB);
-	});
-
-	afterAll(async () => {
-		await mongoose.disconnect();
-	});
 
 	describe('POST /api/players', () => {
 		afterAll(async () => {
