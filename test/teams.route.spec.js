@@ -4,7 +4,7 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const TeamModel = require('../models/team.model');
 const CoachModel = require('../models/coach.model');
-const PlayerModel = require('../models/players.model');
+const PlayerModel = require('../models/player.model');
 
 describe('Test on teams API', () => {
 	const coachTeam = {

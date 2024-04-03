@@ -2,7 +2,7 @@ require('dotenv').config();
 const app = require('../app');
 const request = require('supertest');
 const mongoose = require('mongoose');
-const PlayerModel = require('../models/players.model');
+const PlayerModel = require('../models/player.model');
 
 describe('Test on players API', () => {
 	let createdPlayer;
