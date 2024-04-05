@@ -1,12 +1,11 @@
 const app = require('./app');
 const mongoose = require('mongoose');
 require('dotenv').config();
-
-const options = { useNewUrlParser: true };
+const config = require('./config');
 
 mongoose.Promise = global.Promise;
 mongoose
-	.connect(process.env.URL_MONGODB, options)
+	.connect(config.mongodbURL)
 	.then(() => {
 		console.log(`La conexión a la base de datos se ha realizado correctamente.`);
 

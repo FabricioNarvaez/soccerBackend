@@ -1,9 +1,9 @@
 require('dotenv').config();
 require('./mongoDB.js');
-const app = require('../app');
+const app = require('../app.js');
 const request = require('supertest');
-const CoachModel = require('../models/coach.model');
-const TeamModel = require('../models/team.model');
+const CoachModel = require('../models/coach.model.js');
+const TeamModel = require('../models/team.model.js');
 
 describe('Test on coaches API', () => {
 	const newCoach = {
