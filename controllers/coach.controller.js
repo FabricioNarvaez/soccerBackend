@@ -1,10 +1,22 @@
 const mongoose = require('mongoose');
 const CoachModel = require('../models/coach.model');
 const TeamModel = require('../models/team.model');
-const { registerUser, loginUser, deleteController } = require('./common.controllers');
+const { loginUser, deleteController } = require('./common.controllers');
+const { encryptPassword, comparePassword } = require('../helpers/handleBcrypt');
 
 const registerCoach = async (req, res) => {
-	registerUser(req, res, CoachModel);
+	try {
+		const newCoach = req.body;
+		if(!newCoach.name) newCoach.name = newCoach.username;
+		newCoach.password = await encryptPassword(newCoach.password);
+		newCoach.validated = false;
+
+		await CoachModel.create(newCoach);
+		const message = `El usuario ${newCoach.username} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para darle más información.`
+		res.status(200).json({ message });
+	} catch (error) {
+		res.status(500).json({ error });
+	}
 };
 
 const logInCoach = async (req, res) => {

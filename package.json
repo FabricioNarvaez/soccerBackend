@@ -5,8 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "SET NODE_ENV=production&& node server.js",
-		"start:dev": "SET NODE_ENV=development&& node server.js",
-		"dev": "nodemon server.js",
+		"dev": "SET NODE_ENV=development&&nodemon server.js",
 		"test": "jest",
 		"prettier": "npx prettier . --write"
 	},

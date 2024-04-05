@@ -10,6 +10,8 @@ describe('Test on coaches API', () => {
 		userName: 'testCoach',
 		password: 'passwordCoach',
 		name: 'Test Coach',
+		team: 'cancheritos',
+		phoneNumber: '000000000'
 	};
 
 	const newTeam = {
