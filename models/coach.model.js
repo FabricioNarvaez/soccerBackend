@@ -5,6 +5,7 @@ const coachSchema = new Schema({
 	name: String,
 	dni: String,
     email: String,
+    team: String,
     phoneNumber: Number,
 	password: String,
     validated: Boolean

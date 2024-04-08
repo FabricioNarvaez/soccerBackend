@@ -7,11 +7,12 @@ const TeamModel = require('../models/team.model.js');
 
 describe('Test on coaches API', () => {
 	const newCoach = {
-		userName: 'testCoach',
-		password: 'passwordCoach',
 		name: 'Test Coach',
+		dni: 'testCoachDNI',
 		team: 'cancheritos',
-		phoneNumber: '000000000'
+		email: 'cancheritos@gmail.com',
+		phoneNumber: '000000000',
+		password: 'passwordCoach'
 	};
 
 	const newTeam = {
@@ -21,6 +22,20 @@ describe('Test on coaches API', () => {
 		players: [],
 		group: 'A',
 	};
+
+	describe('Create Coach', () => {
+		afterAll(async () => {
+			await CoachModel.deleteMany({ name: newCoach.name });
+		});
+
+		it('Should add new coach', async () => {
+			const response = await request(app).post('/api/coaches/register').send(newCoach);
+			const message = `El usuario ${newCoach.dni} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para validar el usuario.`;
+
+			expect(response.status).toBe(200);
+			expect(response.body.message).toBe(message);
+		});
+	});
 
 	describe('Get Coach Team Info', () => {
 		let coach;
@@ -57,20 +72,6 @@ describe('Test on coaches API', () => {
 			columns.forEach((key) => {
 				expect(teamInfo.body[key]).toBeDefined();
 			});
-		});
-	});
-
-	describe('Create Coach', () => {
-		afterAll(async () => {
-			await CoachModel.deleteMany({ name: newCoach.name });
-		});
-
-		it('Should add new coach', async () => {
-			const response = await request(app).post('/api/coaches/register').send(newCoach);
-
-			expect(response.status).toBe(200);
-			expect(response.body._id).toBeDefined();
-			expect(response.body.userName).toBe(newCoach.userName);
 		});
 	});
 

@@ -21,7 +21,7 @@ const registerCoach = async (req, res) => {
 		}
 
 		await CoachModel.create(newCoach);
-		const message = `El usuario ${newCoach.dni} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para darle más información.`
+		const message = `El usuario ${newCoach.dni} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para validar el usuario.`;
 		res.status(200).json({ message });
 	} catch (error) {
 		res.status(500).json({ error });
