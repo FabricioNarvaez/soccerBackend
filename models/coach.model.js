@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const coachSchema = new Schema({
 	name: String,
-	username: String,
+	dni: String,
     email: String,
     phoneNumber: Number,
 	password: String,

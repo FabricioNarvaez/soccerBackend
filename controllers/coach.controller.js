@@ -7,22 +7,21 @@ const { encryptPassword, comparePassword } = require('../helpers/handleBcrypt');
 const registerCoach = async (req, res) => {
 	try {
 		const newCoach = req.body;
-		if(!newCoach.name) newCoach.name = newCoach.username;
 		newCoach.password = await encryptPassword(newCoach.password);
 		newCoach.validated = false;
 
-		const { username, email } = newCoach;
+		const { dni, email } = newCoach;
 		const userExists = await CoachModel.findOne({
-			$or: [{ username }, { email }]
+			$or: [{ dni }, { email }]
 		});
 		if(userExists){
-			const repeatUserOrEmail = userExists.username === newCoach.username ? "usuario" : "email";
+			const repeatUserOrEmail = userExists.dni === newCoach.dni ? "usuario" : "email";
 			const message = `El ${repeatUserOrEmail} que ha introducido ya existe. Pruebe con un ${repeatUserOrEmail} diferente.`
 			return res.status(409).json({ message });
 		}
 
 		await CoachModel.create(newCoach);
-		const message = `El usuario ${newCoach.username} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para darle más información.`
+		const message = `El usuario ${newCoach.dni} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para darle más información.`
 		res.status(200).json({ message });
 	} catch (error) {
 		res.status(500).json({ error });
