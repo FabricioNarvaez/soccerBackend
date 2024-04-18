@@ -11,6 +11,7 @@ const teamSchema = new Schema({
 	GC: Number,
 	shield: String,
 	group: String,
+	color: String,
 	players: [{ type: mongoose.Schema.Types.ObjectId }],
 	coach: { type: mongoose.Types.ObjectId },
 });

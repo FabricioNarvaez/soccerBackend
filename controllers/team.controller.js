@@ -50,7 +50,7 @@ const getTeams = async (req, res) => {
 
 const createTeam = async (req, res) => {
 	try {
-		const { name, coach, acronym, shield, group } = req.body;
+		const { name, coach, acronym, shield, group, color } = req.body;
 
 		const newTeamToInsert = {
 			name,
@@ -61,11 +61,12 @@ const createTeam = async (req, res) => {
 			GF: 0,
 			GC: 0,
 			shield:
-				shield !== ''
+				shield
 					? shield
 					: 'https://res.cloudinary.com/dzd68sxue/image/upload/v1695055988/default_bnoacd.png',
 			group,
 			coach,
+			color
 		};
 
 		const insertedTeam = await TeamModel.create(newTeamToInsert);
