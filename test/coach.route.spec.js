@@ -7,9 +7,12 @@ const TeamModel = require('../models/team.model.js');
 
 describe('Test on coaches API', () => {
 	const newCoach = {
-		userName: 'testCoach',
-		password: 'passwordCoach',
-		name: 'Test Coach',
+		name: 'Coach Name',
+		dni: 'testCoachDNI',
+		team: 'cancheritos',
+		email: 'cancheritos@gmail.com',
+		phoneNumber: '000000000',
+		password: 'passwordCoach'
 	};
 
 	const newTeam = {
@@ -19,6 +22,59 @@ describe('Test on coaches API', () => {
 		players: [],
 		group: 'A',
 	};
+
+	describe('Create Coach', () => {
+		it('Should add new coach', async () => {
+			const response = await request(app).post('/api/coaches/register').send(newCoach);
+			const message = `El usuario ${newCoach.dni} se ha creado correctamente. Un administrador del torneo se pondrá en contacto con usted para validar el usuario.`;
+
+			expect(response.status).toBe(200);
+			expect(response.body.message).toBe(message);
+		});
+	});
+
+	describe('Login Coach', () => {
+		const coachCredentials = {
+			loginUsername: newCoach.dni,
+			password: newCoach.password
+		}
+
+		afterAll(async () => {
+			await CoachModel.deleteMany({ name: newCoach.name });
+		});
+
+		it('Should return error message if user is not validates', async () => {
+			const errorMessage = "El usuario aún no ha sido validado. Un administrador del torneo se pondrá en contacto con usted para validar el usuario.";
+			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
+
+			expect(response.status).toBe(401);
+			expect(response.body.message).toBe(errorMessage)
+		});
+
+		it('Should return error if coach does not exist', async () => {
+			const coachCredentials = {
+				loginUsername: 'noExiste',
+				password: 'cualquierPassword',
+			};
+
+			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
+
+			expect(response.status).toBe(401);
+			expect(response.body.message).toBe('El usuario que ha introducido no existe.');
+		});
+
+		it('Should return a 401 error if the password is incorrect', async () => {
+			const coachCredentials = {
+				userName: 'testCoach',
+				password: 'wrongPassword',
+			};
+
+			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
+
+			expect(response.status).toBe(401);
+			expect(response.body.message).toBe('El usuario que ha introducido no existe.');
+		});
+	});
 
 	describe('Get Coach Team Info', () => {
 		let coach;
@@ -55,65 +111,6 @@ describe('Test on coaches API', () => {
 			columns.forEach((key) => {
 				expect(teamInfo.body[key]).toBeDefined();
 			});
-		});
-	});
-
-	describe('Create Coach', () => {
-		afterAll(async () => {
-			await CoachModel.deleteMany({ name: newCoach.name });
-		});
-
-		it('Should add new coach', async () => {
-			const response = await request(app).post('/api/coaches/register').send(newCoach);
-
-			expect(response.status).toBe(200);
-			expect(response.body._id).toBeDefined();
-			expect(response.body.userName).toBe(newCoach.userName);
-		});
-	});
-
-	describe('Login Coach', () => {
-		let coach;
-
-		beforeAll(async () => {
-			coach = (await request(app).post('/api/coaches/register').send(newCoach)).body;
-		});
-
-		afterAll(async () => {
-			await CoachModel.deleteMany({ name: newCoach.name });
-		});
-
-		it('Should return a token when authenticating an existing coach', async () => {
-			const coachCredentials = ({ userName, password } = newCoach);
-			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
-
-			expect(response.status).toBe(200);
-			expect(response.body).toHaveProperty('data');
-			expect(response.body).toHaveProperty('token');
-		});
-
-		it('Should return a 401 error if coach does not exist', async () => {
-			const coachCredentials = {
-				userName: 'noExiste',
-				password: 'cualquierPassword',
-			};
-
-			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
-
-			expect(response.status).toBe(401);
-			expect(response.body).toHaveProperty('message', 'Coach not found');
-		});
-
-		it('Should return a 401 error if the password is incorrect', async () => {
-			const coachCredentials = {
-				userName: 'testCoach',
-				password: 'wrongPassword',
-			};
-
-			const response = await request(app).post('/api/coaches/login').send(coachCredentials);
-
-			expect(response.status).toBe(401);
-			expect(response.body).toHaveProperty('message', 'Unauthorized');
 		});
 	});
 

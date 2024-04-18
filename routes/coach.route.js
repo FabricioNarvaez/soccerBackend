@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const { registerCoach, logInCoach, deleteCoach, getTeamInfo } = require('../controllers/coach.controller');
+const { registerCoach, loginCoach, deleteCoach, getTeamInfo } = require('../controllers/coach.controller');
 
 router.post('/register', registerCoach);
-router.post('/login', logInCoach);
+router.post('/login', loginCoach);
 router.delete('/:id', deleteCoach);
 router.get('/team/:id', getTeamInfo);
 
