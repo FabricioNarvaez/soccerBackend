@@ -4,8 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "SET NODE_ENV=production&& node server.js",
-		"dev": "SET NODE_ENV=development&&nodemon server.js",
+		"start": "node index.js",
+		"dev": "SET NODE_ENV=development&&nodemon index.js",
 		"test": "jest",
 		"prettier": "npx prettier . --write"
 	},
