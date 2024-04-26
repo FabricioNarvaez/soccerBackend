@@ -1,5 +1,6 @@
 'use strict';
 
+const mongoose = require('mongoose');
 const TeamModel = require('../models/team.model');
 const { updateController, deleteController } = require('./common.controllers');
 
@@ -48,6 +49,49 @@ const getTeams = async (req, res) => {
 	}
 };
 
+const getTeamById = async (req, res) => {
+	try {
+		const teamId = new mongoose.Types.ObjectId(req.params.id);
+		const teamFounded = await TeamModel.aggregate([
+			{
+				$match: {
+					_id: teamId,
+				},
+			},
+			{
+				$lookup: {
+					from: 'coaches',
+					localField: 'coach',
+					foreignField: '_id',
+					as: 'coachTeam',
+				},
+			},
+			{
+				$lookup: {
+					from: 'players',
+					localField: 'players',
+					foreignField: '_id',
+					as: 'playersInfo',
+				},
+			},
+			{
+				$addFields: {
+					'coachName': { $arrayElemAt: ['$coachTeam.name', 0] },
+					'playersDetails': '$playersInfo',
+					'GD': { $subtract: ['$GF', '$GC'] },
+					'Pts': {
+						$add: [{ $multiply: ['$PG', 3] }, '$PE'],
+					},
+				},
+			},
+			{ $project: { 'coachTeam': 0, 'playersInfo': 0, 'players': 0 } },
+		]);
+		res.json(teamFounded[0]);
+	} catch (error) {
+		
+	}
+}
+
 const createTeam = async (req, res) => {
 	try {
 		const { name, coach, acronym, shield, group, color } = req.body;
@@ -84,4 +128,4 @@ const deleteTeam = async (req, res) => {
 	deleteController(req, res, TeamModel);
 };
 
-module.exports = { getTeams, createTeam, updateTeam, deleteTeam };
+module.exports = { getTeams, getTeamById, createTeam, updateTeam, deleteTeam };

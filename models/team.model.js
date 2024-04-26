@@ -10,10 +10,15 @@ const teamSchema = new Schema({
 	GF: Number,
 	GC: Number,
 	shield: String,
+	teamPhoto: String,
 	group: String,
 	color: String,
 	players: [{ type: mongoose.Schema.Types.ObjectId }],
 	coach: { type: mongoose.Types.ObjectId },
+	TAM: Number,
+	TAZ: Number,
+	DAM: Number,
+	TRO: Number
 });
 
 module.exports = mongoose.model('teams', teamSchema);
