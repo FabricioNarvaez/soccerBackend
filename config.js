@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const config = {
-  mongodbURL: process.env.NODE_ENV === 'production' ? setULR(process.env.URL_MONGODB_PROD) : setULR(process.env.URL_MONGODB_DEV)
+  mongodbURL: process.env.NODE_ENV && process.env.NODE_ENV === 'development' ?  setULR(process.env.URL_MONGODB_DEV) : setULR(process.env.URL_MONGODB_PROD)
 };
 
 function setULR(env){
