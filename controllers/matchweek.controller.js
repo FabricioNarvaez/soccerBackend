@@ -59,7 +59,7 @@ const getAllMatchweeks = async (req, res) => {
 				populate: {
 					path: 'localId visitorId',
 					model: TeamModel,
-					select: 'name',
+					select: 'name shield',
 				},
 			})
 			.sort({ matchweek: 1 })
