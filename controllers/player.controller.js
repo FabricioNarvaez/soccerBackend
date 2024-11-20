@@ -7,7 +7,7 @@ const createPlayer = async (req, res) => {
 		const newPlayerObject = {
 			name,
 			playerNumber,
-			alias,
+			alias: alias || name,
 			goals: 0,
 			yellowCards: 0,
 			doubleYellowCard: 0,
