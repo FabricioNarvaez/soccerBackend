@@ -1,13 +1,14 @@
 const PlayerModel = require('../models/player.model');
+const TeamModel = require('../models/team.model');
 const { updateController, deleteController } = require('./common.controllers');
 
 const createPlayer = async (req, res) => {
 	try {
-		const { name, playerNumber, alias } = req.body;
+		const { name, playerNumber, alias, teamId} = req.body;
 		const newPlayerObject = {
 			name,
 			playerNumber,
-			alias,
+			alias: alias || name,
 			goals: 0,
 			yellowCards: 0,
 			doubleYellowCard: 0,
@@ -19,6 +20,12 @@ const createPlayer = async (req, res) => {
 		};
 
 		const playerCreated = await PlayerModel.create(newPlayerObject);
+
+		if(teamId){
+			const playersObject = { players: [playerCreated._id]};
+			await TeamModel.findByIdAndUpdate(teamId, playersObject, { new: true }).lean();
+		}
+
 		res.json(playerCreated);
 	} catch (error) {
 		res.status(500).json({ error: error });

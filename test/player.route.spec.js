@@ -3,6 +3,7 @@ require('./mongoDB.js');
 const app = require('../app');
 const request = require('supertest');
 const PlayerModel = require('../models/player.model');
+const TeamModel = require('../models/team.model');
 
 describe('Test on players API', () => {
 	let createdPlayer;
@@ -13,17 +14,33 @@ describe('Test on players API', () => {
 		alias: 'Test',
 	};
 
+	const newTeam = {
+		name: 'Test Team',
+		acronym: 'TT',
+		shield: '',
+		players: [],
+		group: 'A',
+	};
+
 	describe('Check create player', () => {
 		afterAll(async () => {
 			await PlayerModel.deleteMany({ name: newPlayer.name });
+			await TeamModel.deleteMany({ name: newTeam.name });
 		});
 
 		it('Should create a new player', async () => {
+			const createdTeam = await request(app).post('/api/teams/create').send(newTeam);
+			newPlayer.teamId = createdTeam.body._id;
 			createdPlayer = await request(app).post('/api/players/create').send(newPlayer);
+			const playerId = createdPlayer.body._id;
 
 			expect(createdPlayer.status).toBe(200);
-			expect(createdPlayer.body._id).toBeDefined();
+			expect(playerId).toBeDefined();
 			expect(createdPlayer.body.name).toBe(newPlayer.name);
+
+			const getTeamInfo = await request(app).get(`/api/teams/team/${createdTeam.body._id}`).send();
+			const playerFounded = getTeamInfo.body.playersDetails.find(player => player._id === playerId);
+			expect(playerFounded).not.toBeUndefined();
 		});
 	});
 
