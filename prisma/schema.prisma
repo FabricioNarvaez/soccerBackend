@@ -7,7 +7,41 @@ datasource db {
 }
 
 model Team {
-  id     Int     @id @default(autoincrement())
-  name   String  @unique
-  shield String?
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  acronym     String   @db.VarChar(3)
+  shield      String?  
+  teamPhoto   String?  
+  group       String?  
+  color       String   @default("#3b82f6")
+  
+  played      Int      @default(0)
+  won         Int      @default(0)
+  drawn       Int      @default(0)
+  lost        Int      @default(0)
+  goalsFor    Int      @default(0)
+  goalsAgainst Int     @default(0)
+
+  // players     Player[]
+
+  coachId     Int      @unique
+  coach       User     @relation(fields: [coachId], references: [id])
+
+  // matchesHome Match[]  @relation("LocalTeam")
+  // matchesAway Match[]  @relation("VisitorTeam")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  password    String
+  name        String
+  dni         String?  @unique
+  phoneNumber String?
+  role        String   @default("COACH") // "ADMIN" o "COACH"
+  validated   Boolean  @default(false)
+  team        Team?
 }
