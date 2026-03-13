@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Player } from '@prisma/client';
 
 @Injectable()
 export class PlayersService {
-  create(createPlayerDto: CreatePlayerDto) {
-    return 'This action adds a new player';
+  constructor(private prisma: PrismaService) {}
+
+  async create(createPlayerDto: CreatePlayerDto): Promise<Player> {
+    return await this.prisma.player.create({
+      data: createPlayerDto,
+    });
   }
 
   findAll() {
