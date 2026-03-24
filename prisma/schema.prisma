@@ -28,8 +28,8 @@ model Team {
   coachId Int  @unique
   coach   User @relation(fields: [coachId], references: [id])
 
-  // matchesHome Match[]  @relation("LocalTeam")
-  // matchesAway Match[]  @relation("VisitorTeam")
+  homeMatches  Match[]  @relation("HomeMatches")
+  awayMatches  Match[]  @relation("AwayMatches")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -47,6 +47,26 @@ model Player {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Match {
+  id            Int      @id @default(autoincrement())
+  date          DateTime
+  location      String?
+
+  // Results
+  homeGoals     Int      @default(0)
+  awayGoals     Int      @default(0)
+  isFinished    Boolean  @default(false)
+
+  homeTeam      Team     @relation("HomeMatches", fields: [homeTeamId], references: [id])
+  homeTeamId    Int
+
+  awayTeam      Team     @relation("AwayMatches", fields: [awayTeamId], references: [id])
+  awayTeamId    Int
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model User {
