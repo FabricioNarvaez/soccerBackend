@@ -9,7 +9,7 @@ export class MatchesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createMatchDto: CreateMatchDto): Promise<Match> {
-    if(createMatchDto.homeTeamId === createMatchDto.awayTeamId) {
+    if (createMatchDto.homeTeamId === createMatchDto.awayTeamId) {
       throw new BadRequestException('Un equipo no puede jugar contra sí mismo.');
     }
 
