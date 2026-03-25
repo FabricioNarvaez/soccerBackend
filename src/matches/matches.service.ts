@@ -18,8 +18,13 @@ export class MatchesService {
     });
   }
 
-  findAll() {
-    return `This action returns all matches`;
+  async findAll() {
+    return await this.prisma.match.findMany({
+      include: {
+        homeTeam: { select: { name: true, acronym: true } },
+        awayTeam: { select: { name: true, acronym: true } },
+      }
+    });
   }
 
   findOne(id: number) {
