@@ -16,6 +16,7 @@ model Team {
   group     String?
   color     String  @default("#3b82f6")
 
+  points       Int @default(0)
   played       Int @default(0)
   won          Int @default(0)
   drawn        Int @default(0)
