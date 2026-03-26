@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -27,12 +27,25 @@ export class MatchesService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} match`;
+  async update(id: number, updateMatchDto: UpdateMatchDto) {
+    const existingMatch = await this.prisma.match.findUnique({ where: { id}});
+
+    if (!existingMatch) {
+      throw new NotFoundException(`No se encontró el partido con ID ${id}`);
+    }
+
+    if (existingMatch.isFinished && updateMatchDto.isFinished !== false) {
+      throw new BadRequestException('No se pueden modificar los resultados de un partido finalizado.');
+    }
+
+    return await this.prisma.match.update({
+      where: { id },
+      data: updateMatchDto,
+    });
   }
 
-  update(id: number, updateMatchDto: UpdateMatchDto) {
-    return `This action updates a #${id} match`;
+  findOne(id: number) {
+    return `This action returns a #${id} match`;
   }
 
   remove(id: number) {
