@@ -27,8 +27,8 @@ export class MatchesService {
     });
   }
 
-  async update(id: number, updateMatchDto: UpdateMatchDto) {
-    const existingMatch = await this.prisma.match.findUnique({ where: { id}});
+  async update(id: number, updateMatchDto: UpdateMatchDto): Promise<Match> {
+    const existingMatch = await this.prisma.match.findUnique({ where: { id } });
 
     if (!existingMatch) {
       throw new NotFoundException(`No se encontró el partido con ID ${id}`);
@@ -38,64 +38,59 @@ export class MatchesService {
       throw new BadRequestException('No se pueden modificar los resultados de un partido finalizado.');
     }
 
-    if (updateMatchDto.isFinished) {
-      const homeGoals = updateMatchDto.homeGoals ?? existingMatch.homeGoals;
-      const awayGoals = updateMatchDto.awayGoals ?? existingMatch.awayGoals;
-
-      return await this.prisma.$transaction(async (tx) => {
-        const updatedMatch = await tx.match.update({
-          where: { id },
-          data: updateMatchDto,
-        });
-
-        let homePoints = 0, awayPoints = 0;
-        let homeWin = 0, awayWin = 0, draw = 0;
-
-        if (homeGoals > awayGoals) {
-          homePoints = 3;
-          homeWin = 1;
-        } else if (homeGoals < awayGoals) {
-          awayPoints = 3;
-          awayWin = 1;
-        } else {
-          homePoints = 1;
-          awayPoints = 1;
-          draw = 1;
-        }
-
-        await tx.team.update({
-          where: { id: existingMatch.homeTeamId },
-          data: {
-            points: { increment: homePoints },
-            played: { increment: 1 },
-            won: { increment: homeWin },
-            drawn: { increment: draw },
-            lost: { increment: awayWin },
-            goalsFor: { increment: homeGoals },
-            goalsAgainst: { increment: awayGoals },
-          },
-        });
-
-        await tx.team.update({
-          where: { id: existingMatch.awayTeamId },
-          data: {
-            points: { increment: awayPoints },
-            played: { increment: 1 },
-            won: { increment: awayWin },
-            drawn: { increment: draw },
-            lost: { increment: homeWin },
-            goalsFor: { increment: awayGoals },
-            goalsAgainst: { increment: homeGoals },
-          },
-        });
-
-        return updatedMatch;
+    if (!updateMatchDto.isFinished) {
+      return await this.prisma.match.update({
+        where: { id },
+        data: updateMatchDto,
       });
     }
 
-    return await this.prisma.match.update({
-      where: { id },
-      data: updateMatchDto,
+    const homeGoals = updateMatchDto.homeGoals ?? existingMatch.homeGoals;
+    const awayGoals = updateMatchDto.awayGoals ?? existingMatch.awayGoals;
+
+    let homePoints = 0, awayPoints = 0, homeWin = 0, awayWin = 0, draw = 0;
+
+    if (homeGoals > awayGoals) {
+      homePoints = 3; homeWin = 1;
+    } else if (homeGoals < awayGoals) {
+      awayPoints = 3; awayWin = 1;
+    } else {
+      homePoints = 1; awayPoints = 1; draw = 1;
+    }
+
+    return await this.prisma.$transaction(async (tx): Promise<Match> => {
+      const updatedMatch = await tx.match.update({
+        where: { id },
+        data: updateMatchDto,
+      });
+
+      await tx.team.update({
+        where: { id: existingMatch.homeTeamId },
+        data: {
+          points: { increment: homePoints },
+          played: { increment: 1 },
+          won: { increment: homeWin },
+          drawn: { increment: draw },
+          lost: { increment: awayWin },
+          goalsFor: { increment: homeGoals },
+          goalsAgainst: { increment: awayGoals },
+        },
+      });
+
+      await tx.team.update({
+        where: { id: existingMatch.awayTeamId },
+        data: {
+          points: { increment: awayPoints },
+          played: { increment: 1 },
+          won: { increment: awayWin },
+          drawn: { increment: draw },
+          lost: { increment: homeWin },
+          goalsFor: { increment: awayGoals },
+          goalsAgainst: { increment: homeGoals },
+        },
+      });
+
+      return updatedMatch;
     });
   }
 
