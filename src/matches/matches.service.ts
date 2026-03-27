@@ -34,8 +34,63 @@ export class MatchesService {
       throw new NotFoundException(`No se encontró el partido con ID ${id}`);
     }
 
-    if (existingMatch.isFinished && updateMatchDto.isFinished !== false) {
+    if (existingMatch.isFinished) {
       throw new BadRequestException('No se pueden modificar los resultados de un partido finalizado.');
+    }
+
+    if (updateMatchDto.isFinished) {
+      const homeGoals = updateMatchDto.homeGoals ?? existingMatch.homeGoals;
+      const awayGoals = updateMatchDto.awayGoals ?? existingMatch.awayGoals;
+
+      return await this.prisma.$transaction(async (tx) => {
+        const updatedMatch = await tx.match.update({
+          where: { id },
+          data: updateMatchDto,
+        });
+
+        let homePoints = 0, awayPoints = 0;
+        let homeWin = 0, awayWin = 0, draw = 0;
+
+        if (homeGoals > awayGoals) {
+          homePoints = 3;
+          homeWin = 1;
+        } else if (homeGoals < awayGoals) {
+          awayPoints = 3;
+          awayWin = 1;
+        } else {
+          homePoints = 1;
+          awayPoints = 1;
+          draw = 1;
+        }
+
+        await tx.team.update({
+          where: { id: existingMatch.homeTeamId },
+          data: {
+            points: { increment: homePoints },
+            played: { increment: 1 },
+            won: { increment: homeWin },
+            drawn: { increment: draw },
+            lost: { increment: awayWin },
+            goalsFor: { increment: homeGoals },
+            goalsAgainst: { increment: awayGoals },
+          },
+        });
+
+        await tx.team.update({
+          where: { id: existingMatch.awayTeamId },
+          data: {
+            points: { increment: awayPoints },
+            played: { increment: 1 },
+            won: { increment: awayWin },
+            drawn: { increment: draw },
+            lost: { increment: homeWin },
+            goalsFor: { increment: awayGoals },
+            goalsAgainst: { increment: homeGoals },
+          },
+        });
+
+        return updatedMatch;
+      });
     }
 
     return await this.prisma.match.update({
