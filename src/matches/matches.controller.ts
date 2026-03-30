@@ -17,6 +17,11 @@ export class MatchesController {
     return this.matchesService.findAll();
   }
 
+  @Get('standings')
+  getStandings() {
+    return this.matchesService.getStandings();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.matchesService.findOne(+id);

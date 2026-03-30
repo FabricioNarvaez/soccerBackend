@@ -94,6 +94,26 @@ export class MatchesService {
     });
   }
 
+  async getStandings() {
+    return await this.prisma.team.findMany({
+      orderBy: [{ points: 'desc' }, { won: 'desc' }, { goalsFor: 'desc' }],
+      select: {
+        id: true,
+        name: true,
+        acronym: true,
+        shield: true,
+        group: true,
+        points: true,
+        played: true,
+        won: true,
+        drawn: true,
+        lost: true,
+        goalsFor: true,
+        goalsAgainst: true,
+      },
+    });
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} match`;
   }
