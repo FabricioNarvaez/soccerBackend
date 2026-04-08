@@ -64,6 +64,18 @@ export class MatchesService {
         data: updateMatchDto,
       });
 
+      const allScorers = [
+        ...(updateMatchDto.homeScorers ?? []),
+        ...(updateMatchDto.awayScorers ?? []),
+      ];
+
+      for (const playerId of allScorers) {
+        await tx.player.update({
+          where: { id: playerId },
+          data: { goals: { increment: 1 } },
+        });
+      }
+
       await tx.team.update({
         where: { id: existingMatch.homeTeamId },
         data: {

@@ -42,6 +42,7 @@ model Player {
   age    Int?
   name      String
   position  String?
+  goals     Int      @default(0)
 
   team   Team   @relation(fields: [teamId], references: [id])
   teamId Int
