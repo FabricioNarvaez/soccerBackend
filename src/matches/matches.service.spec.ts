@@ -2,10 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MatchesService } from './matches.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { cleanDatabase } from '../../test/test-utils';
+import { TeamFactory } from '../../test/factories/team.factory';
+import { PlayerFactory } from '../../test/factories/player.factory';
+import { UserFactory } from '../../test/factories/user.factory';
 
 describe('MatchesService', () => {
   let service: MatchesService;
   let prisma: PrismaService;
+  let teamFactory: TeamFactory;
+  let playerFactory: PlayerFactory;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,56 +20,17 @@ describe('MatchesService', () => {
     service = module.get<MatchesService>(MatchesService);
     prisma = module.get<PrismaService>(PrismaService);
 
+    const userFactory = new UserFactory(prisma);
+    teamFactory = new TeamFactory(prisma, userFactory);
+    playerFactory = new PlayerFactory(prisma, teamFactory);
+
     await cleanDatabase(prisma);
   });
 
   it('Should add 3 points to local team and 1 goal to player after match finishes 1-0', async () => {
-    const coach1 = await prisma.user.upsert({
-      where: { email: 'coach1@soccer.com' },
-      update: {},
-      create: {
-        email: 'coach1@soccer.com',
-        password: 'password123',
-        name: 'Carlo Ancelotti',
-        role: 'COACH',
-      },
-    });
-
-    const coach2 = await prisma.user.upsert({
-      where: { email: 'coach2@soccer.com' },
-      update: {},
-      create: {
-        email: 'coach2@soccer.com',
-        password: 'password123',
-        name: 'Xavi Hernandez',
-        role: 'COACH',
-      },
-    });
-
-    const homeTeam = await prisma.team.create({
-      data: {
-        name: 'Equipo Local',
-        acronym: 'LOC',
-        coachId: coach1.id,
-      },
-    });
-
-    const awayTeam = await prisma.team.create({
-      data: {
-        name: 'Equipo Visitante',
-        acronym: 'VIS',
-        coachId: coach2.id,
-      },
-    });
-
-    const player = await prisma.player.create({
-      data: {
-        name: 'Jugador 1 Local',
-        number: 9,
-        age: 25,
-        teamId: homeTeam.id,
-      },
-    });
+    const homeTeam = await teamFactory.create();
+    const awayTeam = await teamFactory.create();
+    const player = await playerFactory.create({ teamId: homeTeam.id });
 
     const match = await prisma.match.create({
       data: {
