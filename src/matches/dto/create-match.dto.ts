@@ -2,7 +2,7 @@ import { IsDateString, IsNotEmpty, IsOptional, IsString, IsInt, Min, IsBoolean} 
 
 export class CreateMatchDto {
   @IsDateString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'La fecha del partido es obligatoria.' })
   date: string;
 
   @IsString()
@@ -10,11 +10,11 @@ export class CreateMatchDto {
   location?: string;
 
   @IsInt()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'El ID del equipo local es obligatorio.' })
   homeTeamId: number;
 
   @IsInt()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'El ID del equipo visitante es obligatorio.' })
   awayTeamId: number;
 
   @IsInt()
