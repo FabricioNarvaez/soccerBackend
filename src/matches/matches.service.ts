@@ -59,15 +59,13 @@ export class MatchesService {
     }
 
     return await this.prisma.$transaction(async (tx): Promise<Match> => {
+      const { homeScorers, awayScorers, ...matchData } = updateMatchDto;
       const updatedMatch = await tx.match.update({
         where: { id },
-        data: updateMatchDto,
+        data: matchData,
       });
 
-      const allScorers = [
-        ...(updateMatchDto.homeScorers ?? []),
-        ...(updateMatchDto.awayScorers ?? []),
-      ];
+      const allScorers = [...(homeScorers ?? []), ...(awayScorers ?? [])];
 
       for (const playerId of allScorers) {
         await tx.player.update({
