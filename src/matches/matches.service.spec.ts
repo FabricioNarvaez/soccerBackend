@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MatchesService } from './matches.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { NotFoundException } from '@nestjs/common';
+import { cleanDatabase } from '../../test/test-utils';
 
 describe('MatchesService', () => {
   let service: MatchesService;
@@ -15,9 +15,7 @@ describe('MatchesService', () => {
     service = module.get<MatchesService>(MatchesService);
     prisma = module.get<PrismaService>(PrismaService);
 
-    await prisma.match.deleteMany();
-    await prisma.player.deleteMany();
-    await prisma.team.deleteMany();
+    await cleanDatabase(prisma);
   });
 
   it('Should add 3 points to local team and 1 goal to player after match finishes 1-0', async () => {
